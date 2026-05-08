@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "robotframework-common-keywords"
+version = "0.1.0"
+description = "Reusable validation keyword package for Robot Framework — one-line validations for forms, APIs, and UI state."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Keyword-Driven Framework PoC" },
+]
+keywords = ["robotframework", "testing", "validation", "qa", "forms", "api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+dependencies = [
+    "robotframework>=7.0",
+    "robotframework-browser>=18.0",
+    "robotframework-requests>=0.9.7",
+    "faker>=25.0",
+    "jsonschema>=4.0",
+    "phonenumbers>=8.13",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "robotframework-pabot>=4.0",
+    "robotframework-datadriver>=1.11",
+]
+
+
+[tool.setuptools]
+# Map every Python package name under `robot_common_keywords` to its actual
+# on-disk directory so testers can `Resource robot_common_keywords/...`.
+# Keeps the current on-disk layout without physically moving anything.
+packages = [
+    "robot_common_keywords",
+    "robot_common_keywords.form_validation",
+    "robot_common_keywords.api_validation",
+    "robot_common_keywords.ui_validation",
+    "robot_common_keywords.data_generators",
+    "robot_common_keywords.libraries",
+    "robot_common_keywords.test_data",
+    "robot_common_keywords.test_data.schemas",
+    "robot_common_keywords.test_data.sample_files",
+]
+
+[tool.setuptools.package-dir]
+"robot_common_keywords" = "."
+"robot_common_keywords.form_validation" = "form_validation"
+"robot_common_keywords.api_validation" = "api_validation"
+"robot_common_keywords.ui_validation" = "ui_validation"
+"robot_common_keywords.data_generators" = "data_generators"
+"robot_common_keywords.libraries" = "libraries"
+"robot_common_keywords.test_data" = "test_data"
+"robot_common_keywords.test_data.schemas" = "test_data/schemas"
+"robot_common_keywords.test_data.sample_files" = "test_data/sample_files"
+
+[tool.setuptools.package-data]
+"robot_common_keywords" = ["*.md"]
+"robot_common_keywords.form_validation" = ["*.resource"]
+"robot_common_keywords.api_validation" = ["*.resource"]
+"robot_common_keywords.ui_validation" = ["*.resource"]
+"robot_common_keywords.data_generators" = ["*.resource"]
+"robot_common_keywords.test_data" = ["*.yaml"]
+"robot_common_keywords.test_data.schemas" = ["*.json"]
+"robot_common_keywords.test_data.sample_files" = ["*"]

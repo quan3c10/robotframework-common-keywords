@@ -1,0 +1,36 @@
+# Curated invalid emails for Validate Email Field. 23 entries covering
+# missing local/domain, missing TLD, illegal chars, dot-rule violations,
+# bad domain labels, and injection probes.
+#
+# Every entry MUST be rejected by the JS validator in
+# ../tests/fixtures/text_form.html. When adding new entries, dry-test them
+# against that validator before committing.
+
+invalid_emails:
+  # --- Structural failures ---
+  - "plainaddress"                  # no @
+  - "@missingusername.com"          # empty local part
+  - "user@"                         # empty domain
+  - "@domain.com"                   # empty local part
+  - "double@@domain.com"            # multiple @
+  # --- Domain failures ---
+  - "missing@domain"                # no dot in domain
+  - "missing.tld@domain"            # no dot in domain
+  - "user@domain.c"                 # 1-char TLD (we require ≥ 2)
+  - "missing@.dot.com"              # empty first domain label
+  - "user@domain..com"              # consecutive dots in domain
+  - "user@-dash.com"                # label starts with dash
+  - "user@dash-.com"                # label ends with dash
+  - "user@[1234:5678]"              # IP-literal brackets not accepted here
+  - "user@192.168.1.300"            # numeric TLD "300"
+  - "email@123.456.789.012"         # numeric TLD
+  # --- Local-part failures ---
+  - "spaces in@email.com"           # space in local
+  - "trailing.dot.@domain.com"      # local ends with dot
+  - ".leading.dot@domain.com"       # local starts with dot
+  - "consecutive..dots@domain.com"  # consecutive dots in local
+  # --- Injection / disallowed characters ---
+  - "<script>@evil.com"
+  - "user\"name@domain.com"
+  - "user\\@name@domain.com"
+  - "\"user@\"@domain.com"

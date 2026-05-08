@@ -1,0 +1,64 @@
+# Country-keyed phone-format rules used by Validate Phone Field.
+# Add a new country by appending a new entry under `countries:` — no code
+# changes required.
+#
+# Per-country shape:
+#   min_length:      minimum digit count the app should accept
+#   max_length:      maximum digit count the app should accept
+#   prefix:          E.164 prefix, e.g. "+84"
+#   valid_samples:   3+ numbers the app MUST accept
+#   invalid_samples: 3+ strings the app MUST reject
+
+countries:
+
+  VN:
+    min_length: 9
+    max_length: 13
+    prefix: "+84"
+    valid_samples:
+      - "0912345678"
+      - "+84912345678"
+      - "0987 654 321"
+    invalid_samples:
+      - "123"
+      - "abc"
+      - "notaphone"
+
+  US:
+    min_length: 10
+    max_length: 14
+    prefix: "+1"
+    valid_samples:
+      - "5551234567"
+      - "+15551234567"
+      - "555 123 4567"
+    invalid_samples:
+      - "123"
+      - "abc"
+      - "phonenumber"
+
+  JP:
+    min_length: 10
+    max_length: 13
+    prefix: "+81"
+    valid_samples:
+      - "0312345678"
+      - "+81312345678"
+      - "090 1234 5678"
+    invalid_samples:
+      - "123"
+      - "abc"
+      - "not-a-phone"
+
+  UK:
+    min_length: 10
+    max_length: 13
+    prefix: "+44"
+    valid_samples:
+      - "02012345678"
+      - "+442012345678"
+      - "020 1234 5678"
+    invalid_samples:
+      - "12"
+      - "abc"
+      - "not-a-number"

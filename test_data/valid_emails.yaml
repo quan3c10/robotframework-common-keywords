@@ -1,0 +1,17 @@
+# Edge-case valid emails used by Validate Email Field. Curated to pass the
+# medium-strict validator embedded in ../tests/fixtures/text_form.html.
+# Adding a new entry here MUST be matched by the fixture's JS isValidEmail().
+
+valid_emails:
+  - "user@example.com"
+  - "user.name@example.com"
+  - "user+tag@example.com"                          # plus-addressing
+  - "user@sub.example.com"                          # subdomain
+  - "user@example.co.uk"                            # long TLD (2 labels)
+  - "_underscore@example.com"                       # leading underscore in local part
+  - "first.last+tag@subdomain.example.co.uk"        # complex, still RFC-safe
+  - "numeric123@example.com"                        # digits in local part
+  - "very.long.but.still.valid@example.com"
+  - "x@example.io"                                  # short local + short domain
+  - "u@a.co"                                        # minimum plausible
+  - "mixed.Case@Example.COM"                        # case preserved

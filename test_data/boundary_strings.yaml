@@ -1,0 +1,45 @@
+# Reusable edge-case strings for boundary testing. Runtime-generated strings
+# (arbitrary length / random content) use libraries/boundary_generator.py;
+# this YAML holds the fixed strings that tests want byte-identical across runs.
+
+edge_cases:
+  empty: ""
+  single_char: "a"
+  two_chars: "ab"
+
+whitespace_cases:
+  spaces_only: "    "
+  leading_spaces: "   hello"
+  trailing_spaces: "hello   "
+  both_ends: "   hello   "
+  internal: "hello   world"
+
+unicode_cases:
+  accented: "áéíóú"
+  cjk: "中文测试"
+  cyrillic: "русский"
+  arabic: "العربية"
+  emoji: "👋😀🚀"
+  mixed: "Hello 世界 👋"
+
+# Strings likely to expose naïve concatenation / escaping bugs.
+injection_probe_chars:
+  sql_quote: "'"
+  sql_semicolon: ";"
+  double_quote: "\""
+  backslash: "\\"
+  ampersand: "&"
+  angle_open: "<"
+  angle_close: ">"
+  html_entity: "&lt;"
+
+# Fixed-length strings for maxlength tests that want a hand-curated (not
+# random) sample. Use `lengths.hundred` etc. via Load YAML.
+lengths:
+  one: "a"
+  five: "aaaaa"
+  ten: "aaaaaaaaaa"
+  twenty: "aaaaaaaaaaaaaaaaaaaa"
+  fifty: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  hundred: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  two_hundred_fifty_four: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

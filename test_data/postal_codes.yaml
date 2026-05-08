@@ -1,0 +1,4 @@
+# Country-keyed postal-code rules (regex + samples).
+# Populated in a later Phase 2 sub-task.
+
+countries: {}

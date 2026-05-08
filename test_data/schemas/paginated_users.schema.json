@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PaginatedUsers",
+  "description": "Paginated envelope shape (page / per_page / total / total_pages / data).",
+  "type": "object",
+  "required": ["page", "per_page", "total", "data"],
+  "properties": {
+    "page":        { "type": "integer", "minimum": 1 },
+    "per_page":    { "type": "integer", "minimum": 1 },
+    "total":       { "type": "integer", "minimum": 0 },
+    "total_pages": { "type": "integer", "minimum": 0 },
+    "data": {
+      "type": "array",
+      "description": "Array of user objects. Element shape is validated separately against user.schema.json — cross-schema $ref requires a custom registry which is out of scope for this PoC.",
+      "items": { "type": "object" }
+    }
+  }
+}

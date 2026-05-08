@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ErrorResponse",
+  "description": "Standard error envelope most APIs return on 4xx/5xx.",
+  "type": "object",
+  "required": ["error", "message"],
+  "properties": {
+    "error":   { "type": "string", "minLength": 1 },
+    "code":    { "type": ["string", "integer"] },
+    "message": { "type": "string", "minLength": 1 },
+    "details": {
+      "description": "Optional field-level validation errors, keyed by field name.",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Validation Test Fixture</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2em; max-width: 680px; }
+    .row { margin: 0.8em 0; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input, textarea { font-size: 14px; padding: 6px 8px; width: 100%; box-sizing: border-box; }
+    /* visibility (not display) so toggling never causes layout shift. */
+    .error { color: #b00020; font-size: 13px; margin-top: 4px; min-height: 1.1em; visibility: hidden; }
+    .error.visible { visibility: visible; }
+    .info  { color: #666; font-size: 13px; margin-top: 4px; display: block; }
+    ul#searchable-options {
+      list-style: none; margin: 4px 0 0 0; padding: 0; max-height: 120px;
+      overflow: auto; border: 1px solid #ddd; border-radius: 4px;
+    }
+    ul#searchable-options li { padding: 4px 8px; }
+    ul#searchable-options li.hidden { display: none; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 1.5em 0; }
+  </style>
+</head>
+<body>
+  <h1>Validation Test Fixture</h1>
+  <p>Used by <code>common-keywords/tests/</code>. Each field below exercises one validation behavior.</p>
+
+  <div class="row">
+    <label for="name-input">Name (mandatory):</label>
+    <input type="text" id="name-input" data-test="name-input">
+    <span class="error" data-test="name-error">This field is required.</span>
+  </div>
+
+  <div class="row">
+    <label for="bio-input">Short Bio (max 10 chars):</label>
+    <input type="text" id="bio-input" data-test="bio-input" maxlength="10">
+    <span class="error" data-test="bio-error">Too many characters.</span>
+  </div>
+
+  <div class="row">
+    <label for="username-input">Username (3-8 chars):</label>
+    <input type="text" id="username-input" data-test="username-input" minlength="3" maxlength="8">
+    <span class="error" data-test="username-error">Username must be between 3 and 8 characters.</span>
+  </div>
+
+  <div class="row">
+    <label for="firstname-input">First Name (letters only):</label>
+    <input type="text" id="firstname-input" data-test="firstname-input">
+    <span class="error" data-test="firstname-error">Only letters are allowed.</span>
+  </div>
+
+  <div class="row">
+    <label for="comment-input">Comment (angle brackets not permitted):</label>
+    <input type="text" id="comment-input" data-test="comment-input">
+    <span class="error" data-test="comment-error">Angle brackets are not permitted.</span>
+  </div>
+
+  <div class="row">
+    <label for="email-input">Email (whitespace is trimmed on blur):</label>
+    <input type="text" id="email-input" data-test="email-input">
+  </div>
+
+  <div class="row">
+    <label for="nickname-input">Nickname (case is preserved):</label>
+    <input type="text" id="nickname-input" data-test="nickname-input">
+  </div>
+
+  <div class="row">
+    <label for="domain-input">Domain (normalized to lowercase on blur):</label>
+    <input type="text" id="domain-input" data-test="domain-input">
+  </div>
+
+  <div class="row">
+    <label for="email-val-input">Email (format validated on blur):</label>
+    <input type="text" id="email-val-input" data-test="email-val-input" maxlength="254">
+    <span class="error" data-test="email-val-error">Please enter a valid email.</span>
+  </div>
+
+  <div class="row">
+    <label for="phone-input">Phone (digits / spaces / + / () / -, 7-20 chars):</label>
+    <input type="text" id="phone-input" data-test="phone-input" maxlength="20">
+    <span class="error" data-test="phone-error">Please enter a valid phone number.</span>
+  </div>
+
+  <div class="row">
+    <label for="url-input">Website URL (http or https):</label>
+    <input type="text" id="url-input" data-test="url-input">
+    <span class="error" data-test="url-error">Please enter a valid URL.</span>
+  </div>
+
+  <div class="row">
+    <label for="url-https-input">Secure URL (https required):</label>
+    <input type="text" id="url-https-input" data-test="url-https-input">
+    <span class="error" data-test="url-https-error">HTTPS is required.</span>
+  </div>
+
+  <!-- ========== Number fields ========== -->
+  <div class="row">
+    <label for="number-input">Number (0-100, decimals OK, no negatives):</label>
+    <input type="text" id="number-input" data-test="number-input"
+           data-min="0" data-max="100" data-allow-decimal="true" data-allow-negative="false">
+    <span class="error" data-test="number-error">Please enter a valid number.</span>
+  </div>
+
+  <div class="row">
+    <label for="integer-input">Integer only:</label>
+    <input type="text" id="integer-input" data-test="integer-input"
+           data-allow-decimal="false" data-allow-negative="true">
+    <span class="error" data-test="integer-error">Integers only, please.</span>
+  </div>
+
+  <div class="row">
+    <label for="positive-input">Positive number (&gt; 0):</label>
+    <input type="text" id="positive-input" data-test="positive-input"
+           data-min="0.0000001" data-allow-decimal="true" data-allow-negative="false">
+    <span class="error" data-test="positive-error">Must be positive.</span>
+  </div>
+
+  <div class="row">
+    <label for="currency-input">Currency (USD, $X.XX):</label>
+    <input type="text" id="currency-input" data-test="currency-input"
+           data-validator="currency">
+    <span class="error" data-test="currency-error">Enter an amount like $12.34.</span>
+  </div>
+
+  <div class="row">
+    <label for="percentage-input">Percentage (0-100):</label>
+    <input type="text" id="percentage-input" data-test="percentage-input"
+           data-min="0" data-max="100" data-allow-decimal="true" data-allow-negative="false">
+    <span class="error" data-test="percentage-error">Must be 0-100.</span>
+  </div>
+
+  <!-- ========== Date fields ========== -->
+  <div class="row">
+    <label for="date-input">Date (YYYY-MM-DD):</label>
+    <input type="text" id="date-input" data-test="date-input"
+           data-format="YYYY-MM-DD">
+    <span class="error" data-test="date-error">Enter a valid date.</span>
+  </div>
+
+  <div class="row">
+    <label for="future-date-input">Future date:</label>
+    <input type="text" id="future-date-input" data-test="future-date-input"
+           data-format="YYYY-MM-DD" data-direction="future">
+    <span class="error" data-test="future-date-error">Must be a future date.</span>
+  </div>
+
+  <div class="row">
+    <label for="past-date-input">Past date:</label>
+    <input type="text" id="past-date-input" data-test="past-date-input"
+           data-format="YYYY-MM-DD" data-direction="past">
+    <span class="error" data-test="past-date-error">Must be a past date.</span>
+  </div>
+
+  <div class="row">
+    <label for="start-date-input">Start date:</label>
+    <input type="text" id="start-date-input" data-test="start-date-input"
+           data-format="YYYY-MM-DD" data-range-partner="end-date-input" data-range-role="start">
+    <label for="end-date-input">End date:</label>
+    <input type="text" id="end-date-input" data-test="end-date-input"
+           data-format="YYYY-MM-DD" data-range-partner="start-date-input" data-range-role="end">
+    <span class="error" data-test="date-range-error">Start date must be before end date.</span>
+  </div>
+
+  <!-- ========== Password fields (one per policy) ========== -->
+  <div class="row">
+    <label for="basic-password-input">Password (basic policy):</label>
+    <input type="password" id="basic-password-input" data-test="basic-password-input" data-policy="basic">
+    <span class="error" data-test="basic-password-error">Password does not meet the basic policy.</span>
+  </div>
+
+  <div class="row">
+    <label for="strong-password-input">Password (strong policy):</label>
+    <input type="password" id="strong-password-input" data-test="strong-password-input" data-policy="strong">
+    <span class="error" data-test="strong-password-error">Password does not meet the strong policy.</span>
+  </div>
+
+  <div class="row">
+    <label for="banking-password-input">Password (banking policy):</label>
+    <input type="password" id="banking-password-input" data-test="banking-password-input" data-policy="banking">
+    <span class="error" data-test="banking-password-error">Password does not meet the banking policy.</span>
+  </div>
+
+  <div class="row">
+    <label for="confirm-password-input">Confirm password (must match [data-test=strong-password-input]):</label>
+    <input type="password" id="confirm-password-input" data-test="confirm-password-input"
+           data-match-partner="strong-password-input">
+    <span class="error" data-test="confirm-password-error">Passwords do not match.</span>
+  </div>
+
+  <!-- ========== File upload fields ========== -->
+  <div class="row">
+    <label for="file-input">Upload (jpg/png only, max 5 MB):</label>
+    <input type="file" id="file-input" data-test="file-input" accept=".jpg,.png">
+    <span class="error" data-test="file-error">File not allowed (wrong type or too large).</span>
+  </div>
+
+  <div class="row">
+    <label for="multi-file-input">Upload multiple files:</label>
+    <input type="file" id="multi-file-input" data-test="multi-file-input" multiple>
+    <span class="info" data-test="multi-file-count">0 files selected.</span>
+  </div>
+
+  <!-- ========== Dropdown fields ========== -->
+  <div class="row">
+    <label for="country-select">Country (required):</label>
+    <select id="country-select" data-test="country-select">
+      <option value="">-- select country --</option>
+      <option value="VN">Vietnam</option>
+      <option value="US">United States</option>
+      <option value="JP">Japan</option>
+      <option value="UK">United Kingdom</option>
+    </select>
+    <span class="error" data-test="country-error">Please select a country.</span>
+  </div>
+
+  <div class="row">
+    <label for="searchable-dropdown-input">Searchable country (type to filter):</label>
+    <input type="text" id="searchable-dropdown-input" data-test="searchable-dropdown-input" placeholder="Type to search">
+    <ul id="searchable-options" data-test="searchable-dropdown-options">
+      <li data-test="opt-vn">Vietnam</li>
+      <li data-test="opt-us">United States</li>
+      <li data-test="opt-jp">Japan</li>
+      <li data-test="opt-uk">United Kingdom</li>
+    </ul>
+  </div>
+
+  <!-- ========== UI state fields ========== -->
+  <fieldset class="row">
+    <legend>UI state</legend>
+    <div class="row">
+      <label for="enabled-input">Enabled:</label>
+      <input type="text" id="enabled-input" data-test="enabled-input" value="can edit">
+    </div>
+    <div class="row">
+      <label for="disabled-input">Disabled:</label>
+      <input type="text" id="disabled-input" data-test="disabled-input" disabled value="cannot edit">
+    </div>
+    <div class="row">
+      <label for="readonly-input">Readonly:</label>
+      <input type="text" id="readonly-input" data-test="readonly-input" readonly value="read only">
+    </div>
+    <div class="row">
+      <label for="placeholder-input">With placeholder:</label>
+      <input type="text" id="placeholder-input" data-test="placeholder-input" placeholder="Enter your name here">
+    </div>
+    <div class="row" data-test="always-visible-section">Always visible.</div>
+    <div class="row" data-test="always-hidden-section" style="display:none">Initially hidden.</div>
+  </fieldset>
+
+  <!-- ========== Submit-gated form ========== -->
+  <fieldset class="row">
+    <legend>Submit-gated form (button disabled until both filled)</legend>
+    <div class="row">
+      <label for="gated-a">Required A:</label>
+      <input type="text" id="gated-a" data-test="gated-a">
+    </div>
+    <div class="row">
+      <label for="gated-b">Required B:</label>
+      <input type="text" id="gated-b" data-test="gated-b">
+    </div>
+    <button type="button" id="gated-submit" data-test="gated-submit" disabled>Submit</button>
+  </fieldset>
+
+  <!-- ========== Preservation form (hide/show toggle) ========== -->
+  <fieldset class="row">
+    <legend>Preservation test (hide → show retains inputs)</legend>
+    <div id="preservation-form" data-test="preservation-form">
+      <div class="row">
+        <label for="preserve-alpha">Alpha:</label>
+        <input type="text" id="preserve-alpha" data-test="preserve-alpha">
+      </div>
+      <div class="row">
+        <label for="preserve-beta">Beta:</label>
+        <input type="text" id="preserve-beta" data-test="preserve-beta">
+      </div>
+    </div>
+    <button type="button" data-test="preserve-hide">Hide form</button>
+    <button type="button" data-test="preserve-show">Show form</button>
+  </fieldset>
+
+  <!-- ========== Accessibility ========== -->
+  <fieldset class="row">
+    <legend>Accessibility</legend>
+    <button type="button" data-test="aria-button" aria-label="Delete item">&#x1F5D1;</button>
+
+    <div class="row">
+      <button type="button" data-test="tab-a">A</button>
+      <button type="button" data-test="tab-b">B</button>
+      <button type="button" data-test="tab-c">C</button>
+    </div>
+
+    <form data-test="labeled-form">
+      <div class="row">
+        <label for="labeled-a">Alpha:</label>
+        <input id="labeled-a" data-test="labeled-a" type="text">
+      </div>
+      <div class="row">
+        <label for="labeled-b">Beta:</label>
+        <input id="labeled-b" data-test="labeled-b" type="text">
+      </div>
+      <div class="row">
+        <input data-test="labeled-c" type="text" aria-label="Gamma">
+      </div>
+    </form>
+
+    <form data-test="unlabeled-form">
+      <div class="row">
+        <input data-test="unlabeled-a" type="text">
+        <input data-test="unlabeled-b" type="text">
+      </div>
+    </form>
+  </fieldset>
+
+  <hr>
+  <div class="row">
+    <button type="button" id="submit-button" data-test="submit-button">Submit</button>
+    <span class="error" data-test="submit-error">Please fill all mandatory fields before submitting.</span>
+  </div>
+
+  <script>
+    (function () {
+      const showError = (err, show) => {
+        if (!err) return;
+        err.classList.toggle('visible', !!show);
+      };
+
+      // 1. Required field — blur-triggered
+      const name = document.querySelector('[data-test="name-input"]');
+      const nameError = document.querySelector('[data-test="name-error"]');
+      name.addEventListener('blur', () => showError(nameError, !name.value.trim()));
+
+      // 2. Bio — maxlength is enforced by the browser; error shown if over-length
+      //    is somehow reached (defensive).
+      const bio = document.querySelector('[data-test="bio-input"]');
+      const bioError = document.querySelector('[data-test="bio-error"]');
+      bio.addEventListener('blur', () => showError(bioError, bio.value.length > 10));
+
+      // 3. Username — length-range error on blur when non-empty and out of [3, 8].
+      const uname = document.querySelector('[data-test="username-input"]');
+      const unameError = document.querySelector('[data-test="username-error"]');
+      uname.addEventListener('blur', () => {
+        const n = uname.value.length;
+        showError(unameError, n > 0 && (n < 3 || n > 8));
+      });
+
+      // 4. First name — alpha-only on blur.
+      const fname = document.querySelector('[data-test="firstname-input"]');
+      const fnameError = document.querySelector('[data-test="firstname-error"]');
+      fname.addEventListener('blur', () => {
+        showError(fnameError, fname.value.length > 0 && !/^[A-Za-z]+$/.test(fname.value));
+      });
+
+      // 5. Comment — rejects < or >.
+      const comment = document.querySelector('[data-test="comment-input"]');
+      const commentError = document.querySelector('[data-test="comment-error"]');
+      comment.addEventListener('blur', () => showError(commentError, /[<>]/.test(comment.value)));
+
+      // 6. Email — trim whitespace on blur (normalization, not rejection).
+      const email = document.querySelector('[data-test="email-input"]');
+      email.addEventListener('blur', () => { email.value = email.value.trim(); });
+
+      // 7. Domain — lowercase on blur.
+      const domain = document.querySelector('[data-test="domain-input"]');
+      domain.addEventListener('blur', () => { domain.value = domain.value.toLowerCase(); });
+
+      // 8. Submit — shows error if any mandatory field (just name here) is empty.
+      const submit = document.querySelector('[data-test="submit-button"]');
+      const submitError = document.querySelector('[data-test="submit-error"]');
+      submit.addEventListener('click', () => showError(submitError, !name.value.trim()));
+
+      // 9. Email — medium-strict validator. Designed so every entry in
+      //    test_data/valid_emails.yaml passes and every entry in
+      //    test_data/invalid_emails.yaml fails.
+      function isValidEmail(s) {
+        if (!s) return true;                       // empty = required check handles it
+        const m = /^([^@\s]+)@([^@\s]+)$/.exec(s);
+        if (!m) return false;
+        const [, local, domain] = m;
+        if (local.length === 0) return false;
+        if (local.startsWith('.') || local.endsWith('.')) return false;
+        if (/\.{2,}/.test(local)) return false;
+        if (!/^[A-Za-z0-9._%+_-]+$/.test(local)) return false;
+        if (domain.length === 0) return false;
+        if (!domain.includes('.')) return false;
+        const labels = domain.split('.');
+        if (labels.some(l => l.length === 0 || l.length > 63)) return false;
+        if (labels.some(l => l.startsWith('-') || l.endsWith('-'))) return false;
+        if (labels.some(l => !/^[A-Za-z0-9-]+$/.test(l))) return false;
+        const tld = labels[labels.length - 1];
+        if (!/^[A-Za-z]{2,}$/.test(tld)) return false;
+        return true;
+      }
+      const emailVal = document.querySelector('[data-test="email-val-input"]');
+      const emailValError = document.querySelector('[data-test="email-val-error"]');
+      emailVal.addEventListener('blur', () => {
+        showError(emailValError, emailVal.value.length > 0 && !isValidEmail(emailVal.value));
+      });
+
+      // 10. Phone — permissive format: digits/spaces/+/-/() only, 7-20 chars.
+      const phone = document.querySelector('[data-test="phone-input"]');
+      const phoneError = document.querySelector('[data-test="phone-error"]');
+      const phoneRegex = /^[+\d\s()\-]{7,20}$/;
+      phone.addEventListener('blur', () => {
+        showError(phoneError, phone.value.length > 0 && !phoneRegex.test(phone.value));
+      });
+
+      // 11. URL — accepts any parseable URL (http/https/ftp).
+      const url = document.querySelector('[data-test="url-input"]');
+      const urlError = document.querySelector('[data-test="url-error"]');
+      url.addEventListener('blur', () => {
+        if (url.value.length === 0) { showError(urlError, false); return; }
+        try { new URL(url.value); showError(urlError, false); }
+        catch { showError(urlError, true); }
+      });
+
+      // 12. URL (HTTPS required) — rejects anything whose protocol isn't https.
+      const urlHttps = document.querySelector('[data-test="url-https-input"]');
+      const urlHttpsError = document.querySelector('[data-test="url-https-error"]');
+      urlHttps.addEventListener('blur', () => {
+        if (urlHttps.value.length === 0) { showError(urlHttpsError, false); return; }
+        try {
+          const parsed = new URL(urlHttps.value);
+          showError(urlHttpsError, parsed.protocol !== 'https:');
+        } catch {
+          showError(urlHttpsError, true);
+        }
+      });
+
+      // -------- Number fields (data-attr-driven; one validator for all) ---------
+      function errorForInput(input) {
+        const suffix = input.dataset.test.replace(/-input$/, '-error');
+        return document.querySelector(`[data-test="${suffix}"]`);
+      }
+      function invalidNumber(value, cfg) {
+        if (!value) return false;
+        if (!/^-?\d+(\.\d+)?$/.test(value)) return true;
+        const num = parseFloat(value);
+        if (cfg.allowDecimal === false && value.includes('.')) return true;
+        if (cfg.allowNegative === false && num < 0) return true;
+        if (cfg.min !== undefined && !isNaN(cfg.min) && num < cfg.min) return true;
+        if (cfg.max !== undefined && !isNaN(cfg.max) && num > cfg.max) return true;
+        return false;
+      }
+      function invalidCurrency(value) {
+        if (!value) return false;
+        return !/^\$\d+(\.\d{2})?$/.test(value);
+      }
+      function wireNumberInput(input) {
+        const err = errorForInput(input);
+        input.addEventListener('blur', () => {
+          if (input.dataset.validator === 'currency') {
+            showError(err, invalidCurrency(input.value));
+            return;
+          }
+          const cfg = {
+            min: input.dataset.min !== undefined ? parseFloat(input.dataset.min) : undefined,
+            max: input.dataset.max !== undefined ? parseFloat(input.dataset.max) : undefined,
+            allowDecimal: input.dataset.allowDecimal !== 'false',
+            allowNegative: input.dataset.allowNegative !== 'false',
+          };
+          showError(err, invalidNumber(input.value, cfg));
+        });
+      }
+      document.querySelectorAll('input[data-min], input[data-max], input[data-allow-decimal], input[data-allow-negative], input[data-validator="currency"]')
+        .forEach(wireNumberInput);
+
+      // -------- Date fields (format / direction / range) ---------
+      function parseDate(value, format) {
+        // Only supports YYYY-MM-DD, YY-MM-DD, MM/DD/YYYY, DD/MM/YYYY.
+        const formats = {
+          'YYYY-MM-DD': /^(\d{4})-(\d{2})-(\d{2})$/,
+          'YY-MM-DD':   /^(\d{2})-(\d{2})-(\d{2})$/,
+          'MM/DD/YYYY': /^(\d{2})\/(\d{2})\/(\d{4})$/,
+          'DD/MM/YYYY': /^(\d{2})\/(\d{2})\/(\d{4})$/,
+        };
+        const re = formats[format];
+        if (!re) return null;
+        const m = re.exec(value);
+        if (!m) return null;
+        let y, mo, d;
+        if (format.startsWith('YYYY')) { [, y, mo, d] = m; }
+        else if (format.startsWith('YY')) { [, y, mo, d] = m; y = '20' + y; }
+        else if (format.startsWith('MM')) { [, mo, d, y] = m; }
+        else if (format.startsWith('DD')) { [, d, mo, y] = m; }
+        const dt = new Date(Date.UTC(+y, +mo - 1, +d));
+        if (dt.getUTCFullYear() !== +y || dt.getUTCMonth() !== +mo - 1 || dt.getUTCDate() !== +d) return null;
+        return dt;
+      }
+      function todayUTC() {
+        const n = new Date();
+        return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()));
+      }
+      function wireDateInput(input) {
+        const err = errorForInput(input);
+        const format = input.dataset.format || 'YYYY-MM-DD';
+        const direction = input.dataset.direction; // 'future' | 'past' | undefined
+        input.addEventListener('blur', () => {
+          if (!input.value) { showError(err, false); return; }
+          const parsed = parseDate(input.value, format);
+          if (!parsed) { showError(err, true); return; }
+          const today = todayUTC();
+          if (direction === 'future' && parsed.getTime() <= today.getTime()) { showError(err, true); return; }
+          if (direction === 'past'   && parsed.getTime() >= today.getTime()) { showError(err, true); return; }
+          showError(err, false);
+        });
+      }
+      document.querySelectorAll('input[data-format]').forEach(wireDateInput);
+
+      // Date range (start/end pair sharing a single error span)
+      const startDate = document.querySelector('[data-test="start-date-input"]');
+      const endDate = document.querySelector('[data-test="end-date-input"]');
+      const rangeError = document.querySelector('[data-test="date-range-error"]');
+      function refreshRange() {
+        const s = parseDate(startDate.value, 'YYYY-MM-DD');
+        const e = parseDate(endDate.value, 'YYYY-MM-DD');
+        if (!s || !e) { showError(rangeError, false); return; }
+        showError(rangeError, s.getTime() >= e.getTime());
+      }
+      startDate.addEventListener('blur', refreshRange);
+      endDate.addEventListener('blur', refreshRange);
+
+      // -------- Password fields (policy-driven via data-policy) ---------
+      const POLICIES = {
+        basic:   { min_length: 8, require_uppercase: true, require_number: true },
+        strong:  { min_length: 12, require_uppercase: true, require_lowercase: true, require_number: true, require_special: true, forbid_common_passwords: true },
+        banking: { min_length: 14, require_uppercase: true, require_lowercase: true, require_number: true, require_special: true, forbid_username_substring: true, forbid_sequential_chars: true },
+      };
+      const COMMON_PW = new Set([
+        'password', 'password123', '12345678', 'qwerty', 'admin123',
+        'letmein', 'welcome123', 'monkey123', 'abc123', 'iloveyou',
+      ]);
+      function hasSequential(s) {
+        for (let i = 0; i < s.length - 2; i++) {
+          const a = s.charCodeAt(i), b = s.charCodeAt(i + 1), c = s.charCodeAt(i + 2);
+          if (b === a + 1 && c === b + 1) return true;
+          if (b === a - 1 && c === b - 1) return true;
+        }
+        return false;
+      }
+      function passwordFails(value, policy) {
+        if (!value) return false;
+        if (policy.min_length && value.length < policy.min_length) return true;
+        if (policy.max_length && value.length > policy.max_length) return true;
+        if (policy.require_uppercase && !/[A-Z]/.test(value)) return true;
+        if (policy.require_lowercase && !/[a-z]/.test(value)) return true;
+        if (policy.require_number && !/[0-9]/.test(value)) return true;
+        if (policy.require_special && !/[^A-Za-z0-9]/.test(value)) return true;
+        if (policy.forbid_common_passwords && COMMON_PW.has(value.toLowerCase())) return true;
+        if (policy.forbid_sequential_chars && hasSequential(value)) return true;
+        if (policy.forbid_username_substring && window.currentUsername) {
+          if (value.toLowerCase().includes(window.currentUsername.toLowerCase())) return true;
+        }
+        return false;
+      }
+      document.querySelectorAll('input[data-policy]').forEach(input => {
+        const err = errorForInput(input);
+        const policy = POLICIES[input.dataset.policy];
+        input.addEventListener('blur', () => showError(err, passwordFails(input.value, policy)));
+      });
+
+      // Confirm password matches its partner.
+      const confirmPw = document.querySelector('[data-test="confirm-password-input"]');
+      const confirmPwError = errorForInput(confirmPw);
+      confirmPw.addEventListener('blur', () => {
+        const partner = document.querySelector(`[data-test="${confirmPw.dataset.matchPartner}"]`);
+        showError(confirmPwError, confirmPw.value !== partner.value);
+      });
+
+      // -------- File upload (single) — extension + size check ---------
+      const fileInput = document.querySelector('[data-test="file-input"]');
+      const fileError = document.querySelector('[data-test="file-error"]');
+      const MAX_FILE_BYTES = 5 * 1024 * 1024;
+      fileInput.addEventListener('change', () => {
+        const f = fileInput.files[0];
+        if (!f) { showError(fileError, false); return; }
+        const ext = (f.name.split('.').pop() || '').toLowerCase();
+        const allowed = ['jpg', 'png'];
+        showError(fileError, !allowed.includes(ext) || f.size > MAX_FILE_BYTES);
+      });
+
+      // -------- File upload (multiple) — just report count ---------
+      const multiFile = document.querySelector('[data-test="multi-file-input"]');
+      const multiCount = document.querySelector('[data-test="multi-file-count"]');
+      multiFile.addEventListener('change', () => {
+        multiCount.textContent = `${multiFile.files.length} files selected.`;
+      });
+
+      // -------- Dropdown (required on blur) ---------
+      const countrySelect = document.querySelector('[data-test="country-select"]');
+      const countryError = document.querySelector('[data-test="country-error"]');
+      countrySelect.addEventListener('blur', () => {
+        showError(countryError, !countrySelect.value);
+      });
+
+      // -------- Searchable dropdown (input filters <li>s) ---------
+      const searchInput = document.querySelector('[data-test="searchable-dropdown-input"]');
+      const searchOptions = document.querySelector('[data-test="searchable-dropdown-options"]');
+      searchInput.addEventListener('input', () => {
+        const q = searchInput.value.toLowerCase();
+        searchOptions.querySelectorAll('li').forEach(li => {
+          const matches = li.textContent.toLowerCase().includes(q);
+          li.classList.toggle('hidden', q.length > 0 && !matches);
+        });
+      });
+
+      // -------- Submit-gated form (button disabled until all required filled) ---------
+      const gatedA = document.querySelector('[data-test="gated-a"]');
+      const gatedB = document.querySelector('[data-test="gated-b"]');
+      const gatedSubmit = document.querySelector('[data-test="gated-submit"]');
+      function refreshGatedSubmit() {
+        const valid = gatedA.value.trim() && gatedB.value.trim();
+        gatedSubmit.disabled = !valid;
+      }
+      gatedA.addEventListener('input', refreshGatedSubmit);
+      gatedB.addEventListener('input', refreshGatedSubmit);
+
+      // -------- Preservation toggle (inputs stay in DOM across hide/show) ---------
+      const preserveForm = document.querySelector('[data-test="preservation-form"]');
+      document.querySelector('[data-test="preserve-hide"]').addEventListener('click', () => {
+        preserveForm.style.display = 'none';
+      });
+      document.querySelector('[data-test="preserve-show"]').addEventListener('click', () => {
+        preserveForm.style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>
