@@ -151,6 +151,21 @@ def test_main_refuses_to_overwrite(tmp_path):
     assert "exists" in second.stderr.lower()
 
 
+def test_main_python_mode_refuses_to_overwrite(tmp_path):
+    _seed_minimal_layout(tmp_path)
+    args = (
+        "--domain", "form_validation",
+        "--name", "Compute Postal Code Region",
+        "--module", "postal_code_helpers",
+        "--python",
+    )
+    first = _run_scaffolder(tmp_path, *args)
+    assert first.returncode == 0
+    second = _run_scaffolder(tmp_path, *args)
+    assert second.returncode != 0
+    assert "exists" in second.stderr.lower()
+
+
 def test_main_python_mode_creates_library(tmp_path):
     _seed_minimal_layout(tmp_path)
     result = _run_scaffolder(
