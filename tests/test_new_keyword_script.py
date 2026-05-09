@@ -26,3 +26,18 @@ def test_render_resource_substitutes_name_module_and_domain():
     # Settings imports the internal helpers and Browser library.
     assert "Library          Browser" in rendered
     assert "Resource         _helpers.resource" in rendered
+
+
+def test_render_self_test_links_back_to_module_under_test():
+    rendered = new_keyword.render_self_test(
+        name="Validate Postal Code Field",
+        module="postal_code_field",
+        domain="form_validation",
+    )
+    assert "../form_validation/postal_code_field.resource" in rendered
+    assert "Validate Postal Code Field Smoke" in rendered
+    assert "fixtures/text_form.html" in rendered
+    assert "Set Up Browser" in rendered
+    assert "TODO(new_keyword.py)" in rendered
+    # Stub must fail until edited — protects against silently-passing tests.
+    assert "Fail    TODO(new_keyword.py)" in rendered

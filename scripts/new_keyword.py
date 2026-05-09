@@ -47,6 +47,44 @@ Resource         _helpers.resource
 """
 
 
+_SELF_TEST_TEMPLATE = """\
+*** Settings ***
+Documentation    Self-test for {name}. TODO(new_keyword.py): describe
+...              the fixture interaction this exercises.
+Library          Browser
+Resource         ../{domain}/{module}.resource
+Suite Setup      Set Up Browser
+Suite Teardown   Close Browser    ALL
+Test Setup       Go To    ${{FIXTURE_URL}}
+Test Teardown    Run Keyword If Test Failed    Take Screenshot    fullPage=${{True}}
+
+
+*** Variables ***
+${{BROWSER}}        chromium
+${{HEADLESS}}       ${{True}}
+${{FIXTURE_URL}}    file://${{CURDIR}}/fixtures/text_form.html
+
+
+*** Test Cases ***
+{name} Smoke
+    [Tags]    todo    {domain}
+    # TODO(new_keyword.py): call {name} with a fixture-appropriate selector.
+    Fail    TODO(new_keyword.py): replace this stub with a real assertion.
+
+
+*** Keywords ***
+Set Up Browser
+    New Browser    browser=${{BROWSER}}    headless=${{HEADLESS}}
+    New Context
+    New Page
+"""
+
+
 def render_resource(name: str, module: str, domain: str) -> str:
     """Return the body of a new <domain>/<module>.resource file."""
     return _RESOURCE_TEMPLATE.format(name=name, module=module, domain=domain)
+
+
+def render_self_test(name: str, module: str, domain: str) -> str:
+    """Return the body of a new tests/test_<module>.robot self-test stub."""
+    return _SELF_TEST_TEMPLATE.format(name=name, module=module, domain=domain)
