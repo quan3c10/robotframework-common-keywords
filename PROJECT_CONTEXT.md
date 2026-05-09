@@ -347,15 +347,18 @@ Should Be True    ${truncated} or ${error_shown}
 
 ### 5.1 Check if a keyword already exists
 
+Substitute `<name>` below with the keyword name you're searching for
+(e.g. `Validate Postal Code Field`).
+
 Run these in order before creating anything new:
 
 1. Search resource keyword names:
    ```bash
-   grep -rn "^Keyword Name" form_validation api_validation ui_validation data_generators
+   grep -rn "^<name>" form_validation api_validation ui_validation data_generators
    ```
 2. Search Python `@keyword` decorators:
    ```bash
-   grep -rn '@keyword("Keyword Name")' libraries/
+   grep -rn '@keyword("<name>")' libraries/
    ```
 3. Browse the libdoc HTML at [`docs/keyword-catalog/`](docs/keyword-catalog/)
    for full signatures.
