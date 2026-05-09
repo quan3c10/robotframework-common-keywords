@@ -60,6 +60,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "--import-mode=importlib"
+pythonpath = ["scripts"]
 
 
 [tool.setuptools]
