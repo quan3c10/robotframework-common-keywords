@@ -41,3 +41,28 @@ def test_render_self_test_links_back_to_module_under_test():
     assert "TODO(new_keyword.py)" in rendered
     # Stub must fail until edited — protects against silently-passing tests.
     assert "Fail    TODO(new_keyword.py)" in rendered
+
+
+def test_render_python_library_uses_keyword_decorator():
+    rendered = new_keyword.render_python_library(
+        name="Compute Postal Code Region",
+        module="postal_code_helpers",
+    )
+    # Decorator preserves the human keyword name.
+    assert '@keyword("Compute Postal Code Region")' in rendered
+    # Function name is snake_case derived from the keyword name.
+    assert "def compute_postal_code_region(" in rendered
+    # Mandatory module-level scaffolding.
+    assert 'ROBOT_LIBRARY_SCOPE = "GLOBAL"' in rendered
+    assert "from robot.api.deco import keyword" in rendered
+    # Stub raises until edited.
+    assert "raise NotImplementedError" in rendered
+    assert "TODO(new_keyword.py)" in rendered
+
+
+def test_python_function_name_lowercases_and_underscores_keyword_name():
+    # Internal helper exposed for the renderer.
+    assert new_keyword.keyword_to_function_name("Validate Email Field") == "validate_email_field"
+    assert new_keyword.keyword_to_function_name("Response Status Should Be") == "response_status_should_be"
+    # Already-snake input must round-trip cleanly.
+    assert new_keyword.keyword_to_function_name("foo bar") == "foo_bar"

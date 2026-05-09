@@ -88,3 +88,39 @@ def render_resource(name: str, module: str, domain: str) -> str:
 def render_self_test(name: str, module: str, domain: str) -> str:
     """Return the body of a new tests/test_<module>.robot self-test stub."""
     return _SELF_TEST_TEMPLATE.format(name=name, module=module, domain=domain)
+
+
+_PYTHON_LIBRARY_TEMPLATE = '''\
+"""TODO(new_keyword.py): one-line module description."""
+
+from __future__ import annotations
+
+from robot.api.deco import keyword
+
+ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
+
+@keyword("{name}")
+def {func_name}() -> None:
+    """TODO(new_keyword.py): describe what this keyword returns or does.
+
+    Predicate keywords (``Is X``, ``Has X``) should return ``False`` on
+    bad input rather than raising. Imperative keywords (``Format X``,
+    ``Compute X``) may raise; let the underlying library exception
+    propagate rather than swallowing it.
+    """
+    raise NotImplementedError("TODO(new_keyword.py)")
+'''
+
+
+def keyword_to_function_name(name: str) -> str:
+    """Convert a Title Case keyword name to a snake_case function name."""
+    return "_".join(token.lower() for token in name.split())
+
+
+def render_python_library(name: str, module: str) -> str:
+    """Return the body of a new libraries/<module>.py file."""
+    return _PYTHON_LIBRARY_TEMPLATE.format(
+        name=name,
+        func_name=keyword_to_function_name(name),
+    )
