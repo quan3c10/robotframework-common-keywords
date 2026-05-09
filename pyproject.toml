@@ -54,6 +54,14 @@ excel-markdown = [
 ]
 
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--import-mode=importlib"
+
+
 [tool.setuptools]
 # Map every Python package name under `robot_common_keywords` to its actual
 # on-disk directory so testers can `Resource robot_common_keywords/...`.
