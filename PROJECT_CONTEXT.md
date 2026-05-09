@@ -110,3 +110,51 @@ different product, use this keyword as-is?"**
 No hard-coded URLs, labels, error messages, country codes, or business
 rules. Lift to YAML under `test_data/` or to a keyword argument with a
 sensible default.
+
+---
+
+## 3. Conventions Reference
+
+### Naming and arguments
+
+| Convention | Rule | Example |
+|---|---|---|
+| Keyword naming | Title Case, verb-first, domain-noun ending | `Validate Email Field`, `Response Status Should Be` |
+| Argument naming | snake_case; required positional first; locator args end in `_locator` | `${field_locator}`, `${error_locator}=${EMPTY}` |
+| Required defaults | Every public keyword callable as `Keyword Name    ${locator}` | All other params have defaults |
+| File naming | One domain per file; snake_case `.resource` filename matches keyword family | `email_field.resource` |
+| Internal-only marker | Filename prefixed with `_` | `_helpers.resource` |
+| Python `@keyword` | `@keyword("Title Case Name")`; `ROBOT_LIBRARY_SCOPE = "GLOBAL"`; module docstring | See `libraries/phone_helpers.py` |
+
+### Documentation
+
+Every public keyword has a `[Documentation]` block with:
+
+1. A one-line summary on the first line.
+2. When the keyword composes multiple checks, a numbered list of what
+   runs in order.
+3. An `Arguments:` section describing each parameter when the parameter
+   list is non-trivial.
+
+`Validate Email Field` in
+[`form_validation/email_field.resource`](form_validation/email_field.resource)
+is the canonical pattern.
+
+### Error messages
+
+Every assertion in a public keyword uses `msg=...` and quotes:
+
+- The expected value.
+- The actual value.
+- The locator (when relevant).
+- What was attempted.
+
+Never let a failure say only `Assertion failed`. Examples:
+
+```robot
+Should Be True    200 <= ${code} < 300
+...    msg=Expected a 2xx response, got ${code}.
+
+Should Be True    ${truncated} or ${error_shown}
+...    msg=Expected email field to reject ${max_length + 1}-char email; got length ${final_len}, no error.
+```
