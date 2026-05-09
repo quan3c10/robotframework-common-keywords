@@ -67,3 +67,28 @@ def test_python_function_name_lowercases_and_underscores_keyword_name():
     assert new_keyword.keyword_to_function_name("Response Status Should Be") == "response_status_should_be"
     # Already-snake input must round-trip cleanly.
     assert new_keyword.keyword_to_function_name("foo bar") == "foo_bar"
+
+
+def test_coverage_row_format():
+    row = new_keyword.coverage_row(
+        name="Validate Postal Code Field",
+        module="postal_code_field",
+    )
+    # Markdown table row, terminating newline.
+    assert row.endswith("\n")
+    assert row.startswith("| `Validate Postal Code Field` |")
+    assert "test_postal_code_field.robot" in row
+    assert "TODO" in row
+
+
+def test_append_coverage_row_appends_to_existing_file(tmp_path):
+    coverage = tmp_path / "COVERAGE.md"
+    coverage.write_text("# Coverage\n\n| Keyword | Test | Coverage |\n|---|---|---|\n")
+    new_keyword.append_coverage_row(
+        coverage_path=coverage,
+        name="Validate Postal Code Field",
+        module="postal_code_field",
+    )
+    contents = coverage.read_text()
+    assert contents.count("Validate Postal Code Field") == 1
+    assert contents.endswith("\n")

@@ -10,6 +10,8 @@ scaffold.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 
 _RESOURCE_TEMPLATE = """\
 *** Settings ***
@@ -125,3 +127,20 @@ def render_python_library(name: str, module: str) -> str:
         module=module,
         func_name=keyword_to_function_name(name),
     )
+
+
+def coverage_row(name: str, module: str) -> str:
+    """Return a single Markdown table row to append to docs/COVERAGE.md."""
+    return f"| `{name}` | `test_{module}.robot` (TODO) | TODO |\n"
+
+
+def append_coverage_row(coverage_path: Path, name: str, module: str) -> None:
+    """Append a placeholder row to the given COVERAGE.md path.
+
+    Idempotent only via filesystem state — call sites are responsible for
+    not double-invoking. The scaffolder's overwrite check (Task 6)
+    guards against re-running on the same module.
+    """
+    row = coverage_row(name=name, module=module)
+    with coverage_path.open("a", encoding="utf-8") as fp:
+        fp.write(row)
