@@ -158,3 +158,185 @@ Should Be True    200 <= ${code} < 300
 Should Be True    ${truncated} or ${error_shown}
 ...    msg=Expected email field to reject ${max_length + 1}-char email; got length ${final_len}, no error.
 ```
+
+---
+
+## 4. Module Dictionary
+
+### Top-level table
+
+| Module | Path | Public Keywords | Key Deps | Purpose |
+|---|---|---:|---|---|
+| Required field | `form_validation/required_field.resource` | 1 | Browser, `_helpers` | Empty-input rejection |
+| Text field | `form_validation/text_field.resource` | 7 | Browser, `_helpers`, `boundary_generator` | Length / character / whitespace / case rules |
+| Email field | `form_validation/email_field.resource` | 1 | Browser, `_helpers`, `text_field`, `required_field`, `boundary_generator`, `yaml_loader` | Composite email validation (~28 internal assertions) |
+| Phone field | `form_validation/phone_field.resource` | 2 | Browser, `_helpers`, `phone_helpers` | Country-aware phone validation |
+| URL field | `form_validation/url_field.resource` | 1 | Browser, `_helpers` | URL format + optional `require_https` |
+| Number field | `form_validation/number_field.resource` | 5 | Browser, `_helpers` | Range / integer / positive / currency / percentage |
+| Date field | `form_validation/date_field.resource` | 4 | Browser, `_helpers`, `date_helpers` | Format / future / past / range |
+| Password field | `form_validation/password_field.resource` | 3 | Browser, `_helpers`, `password_helpers` | Policy-driven |
+| File upload | `form_validation/file_upload.resource` | 3 | Browser, `_helpers`, `file_helpers` | Type / size / multi-file |
+| Dropdown field | `form_validation/dropdown_field.resource` | 4 | Browser, `_helpers` | Exact / any-order / default / required / searchable |
+| (internal) Form helpers | `form_validation/_helpers.resource` | 4 | Browser | Trigger / error visibility / read value (**internal**) |
+| Status codes | `api_validation/status_codes.resource` | 4 | `api_validation_helpers` | 2xx / 4xx / 5xx + exact match |
+| Response schema | `api_validation/response_schema.resource` | 3 | `api_validation_helpers` | JSON Schema + required fields + field types |
+| Response time | `api_validation/response_time.resource` | 1 | `api_validation_helpers` | Threshold check |
+| Pagination | `api_validation/pagination.resource` | 2 | `api_validation_helpers` | Envelope + metadata consistency |
+| Error responses | `api_validation/error_responses.resource` | 2 | `api_validation_helpers` | Standard format + field mention |
+| Element state | `ui_validation/element_state.resource` | 7 | Browser | Enabled / disabled / readonly / visible / hidden / focused / placeholder |
+| Form behavior | `ui_validation/form_behavior.resource` | 3 | Browser | Submit gate / inline blur / data preservation |
+| Accessibility | `ui_validation/accessibility.resource` | 3 | Browser | Aria-label / tab order / label association |
+| Invalid data | `data_generators/invalid_data.resource` | (variables) | — | `@{INVALID_EMAILS}`, SQL/XSS probes |
+| API helpers | `libraries/api_validation_helpers.py` | 6+ | `jsonschema` | Schema validation, mock responses, field types |
+| Boundary generator | `libraries/boundary_generator.py` | 1 | — | `Generate String With Length` |
+| Date helpers | `libraries/date_helpers.py` | 5 | — | Today / future / past / relative / format |
+| Faker wrapper | `libraries/faker_wrapper.py` | 4 | `faker` | Fake email / name / phone / address |
+| File helpers | `libraries/file_helpers.py` | 3 | — | Sample paths / oversize file / delete |
+| Password helpers | `libraries/password_helpers.py` | 3 | — | Load policy / generate compliant / serialize |
+| Phone helpers | `libraries/phone_helpers.py` | 2 | `phonenumbers` | Validate / format E.164 |
+
+### Per-module keyword names
+
+`form_validation/required_field.resource`
+- `Validate Required Field`
+
+`form_validation/text_field.resource`
+- `Validate Max Length`
+- `Validate Min Length`
+- `Validate Length Range`
+- `Validate Allowed Characters Only`
+- `Validate Forbidden Characters`
+- `Validate Whitespace Trimmed`
+- `Validate Case Sensitivity`
+
+`form_validation/email_field.resource`
+- `Validate Email Field`
+
+`form_validation/phone_field.resource`
+- `Validate Phone Field`
+- `Validate Country Code Prefix`
+
+`form_validation/url_field.resource`
+- `Validate URL Field`
+
+`form_validation/number_field.resource`
+- `Validate Number Field`
+- `Validate Integer Only`
+- `Validate Positive Number`
+- `Validate Currency Field`
+- `Validate Percentage Field`
+
+`form_validation/date_field.resource`
+- `Validate Date Field`
+- `Validate Date Is Future`
+- `Validate Date Is Past`
+- `Validate Date Range`
+
+`form_validation/password_field.resource`
+- `Validate Password Field`
+- `Validate Password Confirmation Match`
+- `Validate Password Not Equal To Username`
+
+`form_validation/file_upload.resource`
+- `Validate File Type Restriction`
+- `Validate File Size Limit`
+- `Validate Multiple Files Allowed`
+
+`form_validation/dropdown_field.resource`
+- `Validate Dropdown Options Exactly`
+- `Validate Dropdown Default Selection`
+- `Validate Dropdown Is Required`
+- `Validate Dropdown Is Searchable`
+
+`form_validation/_helpers.resource` (**internal — do not call from tests**)
+- `Trigger Field Validation`
+- `Validation Error Should Be Visible`
+- `Validation Error Should Not Be Visible`
+- `Read Field Value`
+
+`api_validation/status_codes.resource`
+- `Response Should Be Success`
+- `Response Should Be Client Error`
+- `Response Should Be Server Error`
+- `Response Status Should Be`
+
+`api_validation/response_schema.resource`
+- `Response Should Match Schema`
+- `Response Should Contain Required Fields`
+- `Response Field Should Be Type`
+
+`api_validation/response_time.resource`
+- `Response Time Should Be Below`
+
+`api_validation/pagination.resource`
+- `Response Should Be Paginated`
+- `Pagination Metadata Should Be Valid`
+
+`api_validation/error_responses.resource`
+- `Error Response Should Follow Standard Format`
+- `Validation Error Should Mention Field`
+
+`ui_validation/element_state.resource`
+- `Validate Element Is Enabled`
+- `Validate Element Is Disabled`
+- `Validate Element Is Readonly`
+- `Validate Element Is Visible`
+- `Validate Element Is Hidden`
+- `Validate Element Has Focus`
+- `Validate Element Has Placeholder`
+
+`ui_validation/form_behavior.resource`
+- `Validate Submit Button Disabled Until Form Valid`
+- `Validate Inline Validation Triggers On Blur`
+- `Validate Form Preserves Data On Navigation`
+
+`ui_validation/accessibility.resource`
+- `Validate Element Has Aria Label`
+- `Validate Tab Order`
+- `Validate Form Fields Have Labels`
+
+`libraries/api_validation_helpers.py`
+- `Response Status Code`
+- `Response Body`
+- `Response Elapsed Seconds`
+- `Validate JSON Schema`
+- `Check Required Fields`
+- `Get JSON Field Type`
+- `Assert Response Field Type`
+- `Error Response Mentions Field`
+- `Create Mock Response`
+
+`libraries/boundary_generator.py`
+- `Generate String With Length`
+
+`libraries/date_helpers.py`
+- `Today As Date`
+- `Future Date`
+- `Past Date`
+- `Date Relative To Today`
+- `Format Date`
+
+`libraries/faker_wrapper.py`
+- `Generate Fake Email`
+- `Generate Fake Name`
+- `Generate Fake Phone`
+- `Generate Fake Address`
+
+`libraries/file_helpers.py`
+- `Sample File Path`
+- `Create Oversize File`
+- `Delete File If Exists`
+
+`libraries/password_helpers.py`
+- `Load Password Policy`
+- `Generate Compliant Password`
+- `Policy As JSON`
+
+`libraries/phone_helpers.py`
+- `Is Valid Phone Number For Country`
+- `Format Phone Number As E164`
+
+> Full keyword signatures (arguments, defaults, types) live in
+> [`docs/keyword-catalog/`](docs/keyword-catalog/) — regenerate via
+> `./scripts/generate-keyword-catalog.sh` after adding or renaming
+> keywords.
