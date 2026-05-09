@@ -122,5 +122,6 @@ def render_python_library(name: str, module: str) -> str:
     """Return the body of a new libraries/<module>.py file."""
     return _PYTHON_LIBRARY_TEMPLATE.format(
         name=name,
+        module=module,
         func_name=keyword_to_function_name(name),
     )

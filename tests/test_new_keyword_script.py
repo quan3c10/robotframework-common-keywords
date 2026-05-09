@@ -55,6 +55,7 @@ def test_render_python_library_uses_keyword_decorator():
     # Mandatory module-level scaffolding.
     assert 'ROBOT_LIBRARY_SCOPE = "GLOBAL"' in rendered
     assert "from robot.api.deco import keyword" in rendered
+    assert "from __future__ import annotations" in rendered
     # Stub raises until edited.
     assert "raise NotImplementedError" in rendered
     assert "TODO(new_keyword.py)" in rendered
