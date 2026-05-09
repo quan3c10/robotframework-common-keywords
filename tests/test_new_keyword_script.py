@@ -7,7 +7,13 @@ a file-generator test.
 
 from __future__ import annotations
 
+import subprocess
+import sys
+from pathlib import Path
+
 import new_keyword
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_render_resource_substitutes_name_module_and_domain():
@@ -92,3 +98,82 @@ def test_append_coverage_row_appends_to_existing_file(tmp_path):
     contents = coverage.read_text()
     assert contents.count("Validate Postal Code Field") == 1
     assert contents.endswith("\n")
+
+
+def _run_scaffolder(repo_root: Path, *args: str) -> subprocess.CompletedProcess:
+    """Invoke scripts/new_keyword.py inside ``repo_root`` as cwd."""
+    return subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "new_keyword.py"), *args],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+
+
+def _seed_minimal_layout(repo_root: Path) -> None:
+    (repo_root / "form_validation").mkdir()
+    (repo_root / "libraries").mkdir()
+    (repo_root / "tests").mkdir()
+    (repo_root / "docs").mkdir()
+    (repo_root / "docs" / "COVERAGE.md").write_text(
+        "# Coverage\n\n| Keyword | Test | Coverage |\n|---|---|---|\n"
+    )
+
+
+def test_main_creates_resource_test_and_coverage(tmp_path):
+    _seed_minimal_layout(tmp_path)
+    result = _run_scaffolder(
+        tmp_path,
+        "--domain", "form_validation",
+        "--name", "Validate Postal Code Field",
+        "--module", "postal_code_field",
+    )
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "form_validation" / "postal_code_field.resource").is_file()
+    assert (tmp_path / "tests" / "test_postal_code_field.robot").is_file()
+    coverage = (tmp_path / "docs" / "COVERAGE.md").read_text()
+    assert "Validate Postal Code Field" in coverage
+    # Manual checklist printed to stdout.
+    assert "TODO" in result.stdout
+
+
+def test_main_refuses_to_overwrite(tmp_path):
+    _seed_minimal_layout(tmp_path)
+    args = (
+        "--domain", "form_validation",
+        "--name", "Validate Postal Code Field",
+        "--module", "postal_code_field",
+    )
+    first = _run_scaffolder(tmp_path, *args)
+    assert first.returncode == 0
+    second = _run_scaffolder(tmp_path, *args)
+    assert second.returncode != 0
+    assert "exists" in second.stderr.lower()
+
+
+def test_main_python_mode_creates_library(tmp_path):
+    _seed_minimal_layout(tmp_path)
+    result = _run_scaffolder(
+        tmp_path,
+        "--domain", "form_validation",
+        "--name", "Compute Postal Code Region",
+        "--module", "postal_code_helpers",
+        "--python",
+    )
+    assert result.returncode == 0, result.stderr
+    library = (tmp_path / "libraries" / "postal_code_helpers.py").read_text()
+    assert '@keyword("Compute Postal Code Region")' in library
+    # Python mode skips the Robot self-test stub but prints a reminder.
+    assert not (tmp_path / "tests" / "test_postal_code_helpers.robot").exists()
+    assert "consuming" in result.stdout.lower() or "test" in result.stdout.lower()
+
+
+def test_main_rejects_unknown_domain(tmp_path):
+    _seed_minimal_layout(tmp_path)
+    result = _run_scaffolder(
+        tmp_path,
+        "--domain", "not_a_real_domain",
+        "--name", "Foo",
+        "--module", "foo",
+    )
+    assert result.returncode != 0

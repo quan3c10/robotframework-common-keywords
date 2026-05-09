@@ -10,7 +10,10 @@ scaffold.
 
 from __future__ import annotations
 
+import argparse
+import sys
 from pathlib import Path
+from typing import Sequence
 
 
 _RESOURCE_TEMPLATE = """\
@@ -144,3 +147,81 @@ def append_coverage_row(coverage_path: Path, name: str, module: str) -> None:
     row = coverage_row(name=name, module=module)
     with coverage_path.open("a", encoding="utf-8") as fp:
         fp.write(row)
+
+
+_DOMAINS = ("form_validation", "api_validation", "ui_validation", "data_generators")
+
+
+def _checklist(domain: str, module: str, python_mode: bool) -> str:
+    """Return the manual checklist printed after a successful scaffold."""
+    if python_mode:
+        return (
+            f"\nScaffolded libraries/{module}.py.\n"
+            "Next steps:\n"
+            "  1. Replace TODO(new_keyword.py) markers with real implementation.\n"
+            "  2. Add coverage in the consuming .resource file's self-test\n"
+            "     (Python @keyword libraries are tested transitively).\n"
+            "  3. Update docs/COVERAGE.md row with the actual self-test name.\n"
+            "  4. Regenerate libdoc: ./scripts/generate-keyword-catalog.sh\n"
+        )
+    return (
+        f"\nScaffolded {domain}/{module}.resource and tests/test_{module}.robot.\n"
+        "Next steps:\n"
+        "  1. Replace TODO(new_keyword.py) markers in Documentation, Arguments, body.\n"
+        "  2. Add YAML test data under test_data/ if needed.\n"
+        f"  3. Run dryrun: robot --dryrun tests/test_{module}.robot\n"
+        "  4. Implement the keyword body until the self-test passes.\n"
+        f"  5. Run full suite: robot -d results --exclude network tests/\n"
+        "  6. Regenerate libdoc: ./scripts/generate-keyword-catalog.sh\n"
+        "  7. Update docs/COVERAGE.md row with the actual self-test name.\n"
+    )
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Scaffold a new common-keyword (.resource by default, "
+                    "or Python @keyword library with --python).",
+    )
+    parser.add_argument("--domain", required=True, choices=_DOMAINS)
+    parser.add_argument("--name", required=True,
+                        help='Title-Case keyword name, e.g. "Validate Postal Code Field"')
+    parser.add_argument("--module", required=True,
+                        help="snake_case basename (no extension), e.g. postal_code_field")
+    parser.add_argument("--python", action="store_true",
+                        help="Generate a Python @keyword library under libraries/ "
+                             "instead of a .resource file.")
+    args = parser.parse_args(argv)
+
+    cwd = Path.cwd()
+    coverage_path = cwd / "docs" / "COVERAGE.md"
+
+    if args.python:
+        target = cwd / "libraries" / f"{args.module}.py"
+        if target.exists():
+            print(f"error: {target} already exists; refusing to overwrite.",
+                  file=sys.stderr)
+            return 1
+        target.write_text(render_python_library(name=args.name, module=args.module))
+    else:
+        resource = cwd / args.domain / f"{args.module}.resource"
+        self_test = cwd / "tests" / f"test_{args.module}.robot"
+        if resource.exists() or self_test.exists():
+            print(f"error: {resource} or {self_test} already exists; "
+                  "refusing to overwrite.", file=sys.stderr)
+            return 1
+        resource.write_text(render_resource(
+            name=args.name, module=args.module, domain=args.domain))
+        self_test.write_text(render_self_test(
+            name=args.name, module=args.module, domain=args.domain))
+
+    if coverage_path.exists():
+        append_coverage_row(coverage_path=coverage_path,
+                            name=args.name, module=args.module)
+
+    print(_checklist(domain=args.domain, module=args.module,
+                     python_mode=args.python))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
