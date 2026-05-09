@@ -44,6 +44,13 @@ dependencies = [
 dev = [
     "robotframework-pabot>=4.0",
     "robotframework-datadriver>=1.11",
+    "pytest>=7.0",
+]
+# For scripts/excel_to_markdown.py and scripts/run-excel-to-markdown.sh
+excel-markdown = [
+    "pandas>=2.0",
+    "tabulate>=0.9",
+    "openpyxl>=3.1",
 ]
 
 
