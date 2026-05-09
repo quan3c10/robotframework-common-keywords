@@ -340,3 +340,233 @@ Should Be True    ${truncated} or ${error_shown}
 > [`docs/keyword-catalog/`](docs/keyword-catalog/) — regenerate via
 > `./scripts/generate-keyword-catalog.sh` after adding or renaming
 > keywords.
+
+---
+
+## 5. Development Workflow
+
+### 5.1 Check if a keyword already exists
+
+Run these in order before creating anything new:
+
+1. Search resource keyword names:
+   ```bash
+   grep -rn "^Keyword Name" form_validation api_validation ui_validation data_generators
+   ```
+2. Search Python `@keyword` decorators:
+   ```bash
+   grep -rn '@keyword("Keyword Name")' libraries/
+   ```
+3. Browse the libdoc HTML at [`docs/keyword-catalog/`](docs/keyword-catalog/)
+   for full signatures.
+4. Cross-reference §4 Module Dictionary above.
+5. Run a Robot dryrun — undefined keywords surface immediately:
+   ```bash
+   robot --dryrun tests/
+   ```
+
+### 5.2 Create a new common-keyword
+
+Use the scaffolder. From the repo root:
+
+```bash
+python scripts/new_keyword.py \
+    --domain form_validation \
+    --name "Validate Postal Code Field" \
+    --module postal_code_field
+```
+
+Generates:
+- `form_validation/postal_code_field.resource` — annotated boilerplate
+  (Settings, Documentation, Arguments, composite step pattern).
+- `tests/test_postal_code_field.robot` — self-test stub against
+  `tests/fixtures/text_form.html`.
+- A placeholder row appended to `docs/COVERAGE.md`.
+
+For a Python `@keyword` library instead, add `--python`:
+
+```bash
+python scripts/new_keyword.py \
+    --domain form_validation \
+    --name "Compute Postal Code Region" \
+    --module postal_code_helpers \
+    --python
+```
+
+The script prints a manual checklist on success. The full sequence is:
+
+1. Replace every `TODO(new_keyword.py)` marker in the generated files
+   (Documentation, Arguments, body).
+2. If the keyword needs reference data (valid samples, invalid samples,
+   country rules), add a YAML file under `test_data/`.
+3. Dryrun the new self-test:
+   ```bash
+   robot --dryrun tests/test_postal_code_field.robot
+   ```
+4. Implement the keyword body; iterate until the self-test passes.
+5. Run the full offline suite:
+   ```bash
+   robot -d results --exclude network tests/
+   ```
+6. Regenerate the keyword catalog:
+   ```bash
+   ./scripts/generate-keyword-catalog.sh
+   ```
+7. Update the placeholder COVERAGE row with the actual self-test name.
+8. Add a CHANGELOG entry.
+
+### 5.3 Boilerplate templates
+
+The scaffolder is the source of truth for templates. Reproduced here for
+quick reference:
+
+**`.resource` keyword template** (what the scaffolder writes):
+
+```robot
+*** Settings ***
+Documentation    {Keyword Name}. One-line summary.
+Library          Browser
+Resource         _helpers.resource
+
+
+*** Keywords ***
+{Keyword Name}
+    [Documentation]    Describe what is checked.
+    ...                When composing multiple checks, list them in a
+    ...                numbered sequence.
+    ...
+    ...                Arguments:
+    ...                - ``field_locator``  — Playwright selector of the input.
+    ...                - ``error_message``  — substring of the visible error text.
+    ...                - ``error_locator``  — optional selector for the error element.
+    ...                - ``trigger``        — ``blur`` (default) or ``submit``.
+    ...                - ``submit_locator`` — required when ``trigger=submit``.
+    [Arguments]    ${field_locator}
+    ...            ${error_message}=Default error text
+    ...            ${error_locator}=${EMPTY}
+    ...            ${trigger}=blur
+    ...            ${submit_locator}=${EMPTY}
+
+    Fill Text    ${field_locator}    ${EMPTY}
+    Trigger Field Validation    ${field_locator}    ${trigger}    ${submit_locator}
+    Validation Error Should Be Visible
+    ...    error_message=${error_message}
+    ...    error_locator=${error_locator}
+```
+
+**Python `@keyword` library template**:
+
+```python
+"""One-line module description."""
+
+from __future__ import annotations
+
+from robot.api.deco import keyword
+
+ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
+
+@keyword("Keyword Name")
+def keyword_name() -> None:
+    """Describe what this keyword returns or does.
+
+    Predicate keywords return False on bad input; imperative keywords
+    let exceptions from the underlying library propagate.
+    """
+    raise NotImplementedError
+```
+
+**Self-test template** (deterministic, against the local fixture):
+
+```robot
+*** Settings ***
+Documentation    Self-test for {Keyword Name}.
+Library          Browser
+Resource         ../{domain}/{module}.resource
+Suite Setup      Set Up Browser
+Suite Teardown   Close Browser    ALL
+Test Setup       Go To    ${FIXTURE_URL}
+
+
+*** Variables ***
+${BROWSER}        chromium
+${HEADLESS}       ${True}
+${FIXTURE_URL}    file://${CURDIR}/fixtures/text_form.html
+
+
+*** Test Cases ***
+{Keyword Name} Smoke
+    [Tags]    {domain}
+    {Keyword Name}    [data-test='some-input']
+
+
+*** Keywords ***
+Set Up Browser
+    New Browser    browser=${BROWSER}    headless=${HEADLESS}
+    New Context
+    New Page
+```
+
+### 5.4 Maintain & update without breaking backward compatibility
+
+| Change | Compatible? | Required action |
+|---|---|---|
+| Add new optional argument with a default | Yes | Append after existing args; do not insert in the middle |
+| Add new required argument | **No** | Add as optional with a default; promote to required only via deprecation cycle |
+| Rename an argument | **No** | Add new name as optional alias; warn when old name is used; remove after 2 minor versions |
+| Rename a keyword | **No** | Keep old keyword as a one-line wrapper that calls the new one + logs a deprecation message |
+| Tighten a default (e.g., `max_length` 255 → 100) | **No** | Treat as breaking; bump minor version; CHANGELOG entry |
+| Add a new internal helper | Yes | Underscore prefix; never call from tests |
+| Loosen validation (accept previously rejected input) | Yes (caller-visible) | CHANGELOG entry; ensure self-test covers the new acceptance |
+| Add a new public keyword | Yes | New self-test required; CHANGELOG; regenerate catalog |
+| Remove a keyword | **No** | Deprecate first (one minor version), then remove |
+
+---
+
+## 6. Extensibility Rules
+
+### 6.1 Error handling
+
+- Every public-keyword assertion uses `msg=...` and quotes the expected
+  value, the actual value, the locator (when relevant), and what was
+  attempted. Never let a failure say only `Assertion failed`.
+- Python predicate keywords (`Is X`, `Has X`) return `False` on bad
+  input rather than raising. Python imperative keywords (`Format X`,
+  `Compute X`) let exceptions from the underlying library propagate;
+  do not swallow them.
+- For composite keywords with branching success conditions
+  (e.g. "either truncate input *or* show an error"), use
+  `Run Keyword And Return Status` and assert the disjunction
+  explicitly:
+  ```robot
+  ${error_shown}=    Run Keyword And Return Status
+  ...    Validation Error Should Be Visible    error_message=...
+  Should Be True    ${truncated} or ${error_shown}
+  ...    msg=Expected ... ; got length ${final_len}, no error.
+  ```
+  See `Validate Email Field` step 4 for the canonical pattern.
+
+### 6.2 Logging
+
+- Use Robot's built-in `Log` keyword. No custom loggers in this
+  package.
+- In long FOR loops over data tables, log only on failure or on
+  entries that materially change behavior. Avoid per-iteration `Log`.
+- Self-tests must be reproducible without `--loglevel DEBUG`.
+
+### 6.3 Performance
+
+- `Type Text` always uses `delay=0 ms    clear=True` in composite
+  keywords. Never leave per-keystroke delay in shipped code.
+- `Load YAML` once per keyword execution; do not reload inside a FOR
+  loop.
+- Composite keywords should run in under 10 seconds against the local
+  fixture (`tests/fixtures/text_form.html`). Flag slower keywords in
+  PR review.
+
+### 6.4 Project-agnosticism (hard rule, restated)
+
+Never hard-code an URL, label, error message, country, or business
+rule. Lift to YAML under `test_data/` or to a keyword argument with a
+sensible default. The merge gate is the question from §2:
+**"Would Team B use this as-is?"**
