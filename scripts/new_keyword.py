@@ -201,7 +201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"error: {target} already exists; refusing to overwrite.",
                   file=sys.stderr)
             return 1
-        target.write_text(render_python_library(name=args.name, module=args.module))
+        target.write_text(render_python_library(name=args.name, module=args.module), encoding="utf-8")
     else:
         resource = cwd / args.domain / f"{args.module}.resource"
         self_test = cwd / "tests" / f"test_{args.module}.robot"
@@ -210,9 +210,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                   "refusing to overwrite.", file=sys.stderr)
             return 1
         resource.write_text(render_resource(
-            name=args.name, module=args.module, domain=args.domain))
+            name=args.name, module=args.module, domain=args.domain), encoding="utf-8")
         self_test.write_text(render_self_test(
-            name=args.name, module=args.module, domain=args.domain))
+            name=args.name, module=args.module, domain=args.domain), encoding="utf-8")
 
     if coverage_path.exists():
         append_coverage_row(coverage_path=coverage_path,
