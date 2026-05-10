@@ -4,6 +4,13 @@ All notable changes to `robotframework-common-keywords` are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- Add `ui_validation/checkbox.resource` with 5 keywords for checkbox group
+  validation (default state, toggle, check-all, indeterminate state,
+  auto-check-all on full selection). Self-tests use new checkbox fixture
+  in `tests/fixtures/text_form.html`.
+
 ## [0.1.0] — 2026-04-25 — Initial release
 
 First public version. Ships the full **Phase 2** validation keyword set

@@ -312,6 +312,39 @@
     </form>
   </fieldset>
 
+  <!-- ========== Checkbox group (ui_validation/checkbox.resource) ========== -->
+  <section data-test="checkbox-fixture">
+    <label><input type="checkbox" id="checkbox-default-unchecked" data-test="checkbox-default-unchecked"> Default unchecked</label>
+    <label><input type="checkbox" id="checkbox-default-checked" data-test="checkbox-default-checked" checked> Default checked</label>
+    <label><input type="checkbox" id="checkbox-toggle" data-test="checkbox-toggle"> Toggle</label>
+
+    <fieldset data-test="check-all-group">
+      <label><input type="checkbox" id="check-all" data-test="check-all"> Check all</label>
+      <label><input type="checkbox" data-test="task-checkbox" data-task="1"> Task 1</label>
+      <label><input type="checkbox" data-test="task-checkbox" data-task="2"> Task 2</label>
+      <label><input type="checkbox" data-test="task-checkbox" data-task="3"> Task 3</label>
+    </fieldset>
+
+    <script>
+      // Wire check-all to the group: standard tri-state pattern.
+      (function () {
+        var master = document.querySelector('[data-test="check-all"]');
+        var members = document.querySelectorAll('[data-test="task-checkbox"]');
+        master.addEventListener('change', function () {
+          members.forEach(function (m) { m.checked = master.checked; });
+          master.indeterminate = false;
+        });
+        members.forEach(function (m) {
+          m.addEventListener('change', function () {
+            var checked = Array.prototype.filter.call(members, function (x) { return x.checked; }).length;
+            master.checked = (checked === members.length);
+            master.indeterminate = (checked > 0 && checked < members.length);
+          });
+        });
+      })();
+    </script>
+  </section>
+
   <hr>
   <div class="row">
     <button type="button" id="submit-button" data-test="submit-button">Submit</button>
