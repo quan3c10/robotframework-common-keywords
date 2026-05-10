@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   validation (default state, toggle, check-all, indeterminate state,
   auto-check-all on full selection). Self-tests use new checkbox fixture
   in `tests/fixtures/text_form.html`.
+- Add `ui_validation/radio.resource` (2 keywords: default selection, single
+  selection).
+- Add `ui_validation/button.resource` (2 keywords: conditional visibility,
+  debounce on rapid clicks).
+- Add `ui_validation/link.resource` (1 keyword: navigates to target via
+  URL change).
+- Extend `tests/fixtures/text_form.html` with priority/severity radio groups,
+  conditional button, debounced button + counter, anchor link + scroll target.
 
 ## [0.1.0] — 2026-04-25 — Initial release
 

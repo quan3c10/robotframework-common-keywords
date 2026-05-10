@@ -345,6 +345,59 @@
     </script>
   </section>
 
+  <section data-test="ui-controls-fixture">
+    <!-- Radio group: default selection is "medium" -->
+    <fieldset data-test="priority-group">
+      <legend>Priority</legend>
+      <label><input type="radio" name="priority" value="low" data-test="priority-radio" data-priority="low"> Low</label>
+      <label><input type="radio" name="priority" value="medium" data-test="priority-radio" data-priority="medium" checked> Medium</label>
+      <label><input type="radio" name="priority" value="high" data-test="priority-radio" data-priority="high"> High</label>
+    </fieldset>
+
+    <!-- Empty radio group: nothing selected by default -->
+    <fieldset data-test="severity-group">
+      <legend>Severity</legend>
+      <label><input type="radio" name="severity" value="minor" data-test="severity-radio"> Minor</label>
+      <label><input type="radio" name="severity" value="major" data-test="severity-radio"> Major</label>
+    </fieldset>
+
+    <!-- Conditional-visibility button -->
+    <input type="checkbox" data-test="enable-submit-trigger"> <label>I agree</label>
+    <button data-test="conditional-submit-button" hidden>Submit</button>
+
+    <!-- Debounced button + counter -->
+    <button data-test="debounced-save-button">Save</button>
+    <span data-test="debounced-counter">0</span>
+
+    <!-- Anchor link + scroll target -->
+    <a data-test="jump-link" href="#jump-target">Jump to section</a>
+    <div id="jump-target" data-test="jump-target">Target section</div>
+
+    <script>
+      (function () {
+        // Conditional button: visible when checkbox is checked.
+        var trigger = document.querySelector('[data-test="enable-submit-trigger"]');
+        var btn = document.querySelector('[data-test="conditional-submit-button"]');
+        trigger.addEventListener('change', function () {
+          btn.hidden = !trigger.checked;
+        });
+
+        // Debounced button: counter increments once per 200 ms window.
+        var debounced = document.querySelector('[data-test="debounced-save-button"]');
+        var counter = document.querySelector('[data-test="debounced-counter"]');
+        var count = 0, timer = null;
+        debounced.addEventListener('click', function () {
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(function () {
+            count++;
+            counter.textContent = count;
+            timer = null;
+          }, 200);
+        });
+      })();
+    </script>
+  </section>
+
   <hr>
   <div class="row">
     <button type="button" id="submit-button" data-test="submit-button">Submit</button>

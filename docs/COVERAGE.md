@@ -104,6 +104,11 @@ keywords or tests.
 | `Validate Check All Toggles Group` | `test_ui_checkbox.robot :: Check All Group — Toggles All On Then Off` & `Check All Group — Wrong Master Locator Causes Failure` | Direct (positive + negative) |
 | `Validate Check All Becomes Indeterminate When One Unchecked` | `test_ui_checkbox.robot :: Indeterminate — Unchecking One Member Sets Master Indeterminate` | Direct |
 | `Validate Check All Auto Checks When All Selected` | `test_ui_checkbox.robot :: Auto Check All — Checking Each Member Individually Checks Master` | Direct |
+| `Validate Radio Default Selection` | `test_ui_radio.robot :: Default Selection — Pre-Checked Radio Detected Correctly` & `Default Selection — Empty Group Has No Selection` (+ 2 negative) | Direct |
+| `Validate Radio Single Selection` | `test_ui_radio.robot :: Single Selection — Priority Group Enforces Mutual Exclusion` | Direct |
+| `Validate Button Hidden When Conditions Unmet` | `test_ui_button.robot :: Button Hidden Until Checkbox Checked — Passes With Check Action` & `Button Hidden Until Conditions Met — Wrong Trigger Locator Fails` | Direct (positive + negative) |
+| `Validate Button Debounces Rapid Clicks` | `test_ui_button.robot :: Debounce — Five Rapid Clicks Increment Counter By Exactly One` & `Debounce — Wrong Counter Locator Fails` | Direct (positive + negative) |
+| `Validate Link Navigates To Target` | `test_ui_link.robot :: Link Navigates To Anchor Target` & `Link Navigation — Wrong Expected Substring Fails` | Direct (positive + negative) |
 
 ---
 
