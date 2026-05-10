@@ -99,11 +99,11 @@ keywords or tests.
 | `Validate Element Has Aria Label` | `test_ui_accessibility.robot :: Aria Label Is Detected On A Button` | Direct |
 | `Validate Tab Order` | `test_ui_accessibility.robot :: Tab Order Follows DOM Order` | Direct |
 | `Validate Form Fields Have Labels` | `test_ui_accessibility.robot` (labeled form PASS + unlabeled form FAIL) | Direct (both outcomes) |
-| `Validate Checkbox Default State` | `test_checkbox.robot :: Default State — Unchecked Is Detected` & `Default State — Checked Is Detected` (+ 2 negative) | Direct |
-| `Validate Checkbox Toggle` | `test_checkbox.robot :: Toggle — Checkbox Flips Both Ways` & `Toggle — Pre-Checked Checkbox Also Toggles` | Direct |
-| `Validate Check All Toggles Group` | `test_checkbox.robot :: Check All Group — Toggles All On Then Off` & `Check All Group — Wrong Master Locator Causes Failure` | Direct (positive + negative) |
-| `Validate Check All Becomes Indeterminate When One Unchecked` | `test_checkbox.robot :: Indeterminate — Unchecking One Member Sets Master Indeterminate` | Direct |
-| `Validate Check All Auto Checks When All Selected` | `test_checkbox.robot :: Auto Check All — Checking Each Member Individually Checks Master` | Direct |
+| `Validate Checkbox Default State` | `test_ui_checkbox.robot :: Default State — Unchecked Is Detected` & `Default State — Checked Is Detected` (+ 2 negative) | Direct |
+| `Validate Checkbox Toggle` | `test_ui_checkbox.robot :: Toggle — Checkbox Flips Both Ways` & `Toggle — Pre-Checked Checkbox Also Toggles` | Direct |
+| `Validate Check All Toggles Group` | `test_ui_checkbox.robot :: Check All Group — Toggles All On Then Off` & `Check All Group — Wrong Master Locator Causes Failure` | Direct (positive + negative) |
+| `Validate Check All Becomes Indeterminate When One Unchecked` | `test_ui_checkbox.robot :: Indeterminate — Unchecking One Member Sets Master Indeterminate` | Direct |
+| `Validate Check All Auto Checks When All Selected` | `test_ui_checkbox.robot :: Auto Check All — Checking Each Member Individually Checks Master` | Direct |
 
 ---
 

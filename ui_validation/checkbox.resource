@@ -62,18 +62,8 @@ Validate Check All Toggles Group
     ...                - ``check_all_locator`` — Playwright selector for the master checkbox.
     ...                - ``group_locator``     — Playwright selector matching all member checkboxes.
     [Arguments]    ${check_all_locator}    ${group_locator}
-    # Precondition: ensure master is unchecked, then uncheck members individually.
-    ${master_checked}=    Get Property    ${check_all_locator}    checked
-    IF    ${master_checked}
-        Click    ${check_all_locator}
-    END
+    Reset Check All Group To Unchecked    ${check_all_locator}    ${group_locator}
     ${members}=    Get Elements    ${group_locator}
-    FOR    ${member}    IN    @{members}
-        ${is_checked}=    Get Property    ${member}    checked
-        IF    ${is_checked}
-            Click    ${member}
-        END
-    END
     # Step 1 → click master → all members must be checked.
     Click    ${check_all_locator}
     FOR    ${member}    IN    @{members}
@@ -104,11 +94,7 @@ Validate Check All Becomes Indeterminate When One Unchecked
     ...                - ``group_locator``      — Playwright selector matching all member checkboxes.
     ...                - ``one_member_locator`` — Playwright selector for a single member to uncheck.
     [Arguments]    ${check_all_locator}    ${group_locator}    ${one_member_locator}
-    # Precondition: ensure master is unchecked, then click it to check all members.
-    ${master_checked}=    Get Property    ${check_all_locator}    checked
-    IF    ${master_checked}
-        Click    ${check_all_locator}
-    END
+    Reset Check All Group To Unchecked    ${check_all_locator}    ${group_locator}
     Click    ${check_all_locator}
     # Now uncheck one member.
     Click    ${one_member_locator}
@@ -134,18 +120,8 @@ Validate Check All Auto Checks When All Selected
     ...                - ``check_all_locator`` — Playwright selector for the master checkbox.
     ...                - ``group_locator``     — Playwright selector matching all member checkboxes.
     [Arguments]    ${check_all_locator}    ${group_locator}
-    # Precondition: uncheck all members.
-    ${master_checked}=    Get Property    ${check_all_locator}    checked
-    IF    ${master_checked}
-        Click    ${check_all_locator}
-    END
+    Reset Check All Group To Unchecked    ${check_all_locator}    ${group_locator}
     ${members}=    Get Elements    ${group_locator}
-    FOR    ${member}    IN    @{members}
-        ${is_checked}=    Get Property    ${member}    checked
-        IF    ${is_checked}
-            Click    ${member}
-        END
-    END
     # Click each member individually.
     FOR    ${member}    IN    @{members}
         Click    ${member}
@@ -158,3 +134,22 @@ Validate Check All Auto Checks When All Selected
     ${indeterminate_final}=    Get Property    ${check_all_locator}    indeterminate
     Should Not Be True    ${indeterminate_final}
     ...    msg=After all ${count} members of '${group_locator}' were individually checked, expected '${check_all_locator}' indeterminate=False, but got indeterminate=${indeterminate_final}.
+
+
+Reset Check All Group To Unchecked
+    [Documentation]    Internal — not part of the public API. Used by the
+    ...                three Check-All keywords to reset both the master
+    ...                and every member to unchecked before the test exercises
+    ...                the behavior under inspection.
+    [Arguments]    ${check_all_locator}    ${group_locator}
+    ${master_checked}=    Get Property    ${check_all_locator}    checked
+    IF    ${master_checked}
+        Click    ${check_all_locator}
+    END
+    ${members}=    Get Elements    ${group_locator}
+    FOR    ${member}    IN    @{members}
+        ${is_checked}=    Get Property    ${member}    checked
+        IF    ${is_checked}
+            Click    ${member}
+        END
+    END
