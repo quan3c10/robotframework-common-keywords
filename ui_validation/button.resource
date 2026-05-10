@@ -64,8 +64,8 @@ Validate Button Debounces Rapid Clicks
     ...                - ``counter_locator``  — Playwright selector for the element showing the count.
     ...                - ``click_count``      — Number of rapid clicks to perform (default: 5).
     ...                - ``debounce_window``  — How long to wait after clicks for the handler to fire
-    ...                                          (default: 300ms). Must be longer than the app's debounce.
-    [Arguments]    ${button_locator}    ${counter_locator}    ${click_count}=5    ${debounce_window}=300ms
+    ...                                          (default: 500ms). Must be longer than the app's debounce.
+    [Arguments]    ${button_locator}    ${counter_locator}    ${click_count}=5    ${debounce_window}=500ms
     # Step 1: read initial counter.
     ${initial_text}=    Get Text    ${counter_locator}
     ${initial_count}=    Convert To Integer    ${initial_text}

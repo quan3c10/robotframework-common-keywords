@@ -5,7 +5,6 @@ Documentation    Project-agnostic assertions about link navigation. The single
 ...              hard-coded here. Works for in-page anchor links (URL gets
 ...              a #fragment) and full-page navigation.
 Library          Browser
-Library          String
 
 
 *** Keywords ***
