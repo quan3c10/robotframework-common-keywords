@@ -1,5 +1,8 @@
 # common-keywords — Reusable Validation Keyword Package for Robot Framework
 
+[![PyPI](https://img.shields.io/pypi/v/robotframework-common-keywords)](https://pypi.org/project/robotframework-common-keywords/)
+[![Python](https://img.shields.io/pypi/pyversions/robotframework-common-keywords)](https://pypi.org/project/robotframework-common-keywords/)
+
 **One-line validations for complete scenarios.** A call like
 `Validate Email Field    ${locator}    max_length=100` runs **28+ internal
 assertions** (required, 23 invalid formats, max-length boundary, valid case).
@@ -22,68 +25,34 @@ schema rules come from YAML, nothing is hard-coded to any specific app.
 
 ## Installation
 
-### Option A — Git submodule
+```bash
+pip install robotframework-common-keywords
+```
+
+For pre-release or development installs from a Git ref:
 
 ```bash
-git submodule add https://github.com/yourcompany/robotframework-common-keywords robotframework-common-keywords
-git submodule update --init --recursive
-pip install -e robotframework-common-keywords
+pip install git+https://github.com/quan3c10/robotframework-common-keywords.git
 ```
 
-Add the Python dependencies to your project's `requirements.txt` (if not
-already pulled in transitively by this package):
-
-```
-faker>=25.0
-jsonschema>=4.0
-phonenumbers>=8.13
-robotframework-browser>=18.0   # for form_validation and ui_validation
-robotframework-requests>=0.9.7 # for api_validation self-tests
-pyyaml>=6.0
-```
-
-Then run `pip install -r requirements.txt`.
-
-### Option B — Pip install (preferred long-term)
-
-The package ships with a `pyproject.toml` so it installs with stock pip.
-Until we publish to PyPI, install from a local path or git URL:
-
-```bash
-# From a local clone of this repo:
-pip install /path/to/robotframework-common-keywords
-
-# Or from Git (monorepo subdirectory, if applicable):
-pip install "git+https://github.com/yourcompany/your-monorepo.git#subdirectory=robotframework-common-keywords"
-```
-
-After installation, imports work via the package path:
+Imports after install use the package path:
 
 ```robot
+*** Settings ***
 Resource    robot_common_keywords/form_validation/email_field.resource
-Resource    robot_common_keywords/api_validation/status_codes.resource
+Library     robot_common_keywords.libraries.phone_helpers
 ```
 
-#### Editable installs (`pip install -e`)
+### Editable installs for contributors
 
-Code and packaged data live under `src/robot_common_keywords/` and install as
-namespace `robot_common_keywords`. Run from the repo root:
+Code lives under `src/robot_common_keywords/`. From a clone of this repo:
 
 ```bash
 pip install -e .
 robot --dryrun tests/
 ```
 
-Self-tests resolve `Resource robot_common_keywords/…` like consumers; avoid
-suite-level `Library` declarations that duplicate a `.resource` which already
-imports the same Python helper (Robot would register duplicate keyword names).
-
-Rule of thumb:
-
-- **Developing this repo** → `pip install -e .` then `robot tests/…`; Playwright
-  must be installed locally (`rfbrowser init`).
-- **Downstream consumers** → `pip install` from wheel/sdist as usual unless you
-  choose editable for debugging.
+Playwright browsers must be installed separately (`rfbrowser init`) to run the Browser-driven self-tests.
 
 ### Browser Library
 
