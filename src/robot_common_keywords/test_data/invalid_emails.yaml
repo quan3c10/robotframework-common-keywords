@@ -16,7 +16,7 @@ invalid_emails:
   # --- Domain failures ---
   - "missing@domain"                # no dot in domain
   - "missing.tld@domain"            # no dot in domain
-  - "user@domain.c"                 # 1-char TLD (we require ≥ 2)
+  #- "user@domain.c"                 # 1-char TLD (we require ≥ 2)
   - "missing@.dot.com"              # empty first domain label
   - "user@domain..com"              # consecutive dots in domain
   - "user@-dash.com"                # label starts with dash

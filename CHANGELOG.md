@@ -6,46 +6,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-- Sources live under `src/robot_common_keywords/`; Robot imports use `Resource robot_common_keywords/...` and `Library robot_common_keywords.libraries.<module>` once the package is installed (`pip install -e .` or wheel).
+Nothing yet on top of **0.1.1** — add bullets here while developing the next version.
 
-- Extend `src/robot_common_keywords/form_validation/number_field.resource` with 2 keywords:
-  rounding-rule check and leading-zero handling (strip-or-error).
-- Add `src/robot_common_keywords/form_validation/datepicker.resource` (2 keywords: search filtering,
-  selection populates field).
-- Add `src/robot_common_keywords/form_validation/text_area.resource` (1 keyword: multiline content
-  preserved through round-trip).
-- Extend `tests/fixtures/text_form.html` with price/quantity inputs,
-  country picker widget, and notes textarea.
-- Add `src/robot_common_keywords/ui_validation/checkbox.resource` with 5 keywords for checkbox group
-  validation (default state, toggle, check-all, indeterminate state,
-  auto-check-all on full selection). Self-tests use new checkbox fixture
-  in `tests/fixtures/text_form.html`.
-- Add `src/robot_common_keywords/ui_validation/radio.resource` (2 keywords: default selection, single
-  selection).
-- Add `src/robot_common_keywords/ui_validation/button.resource` (2 keywords: conditional visibility,
-  debounce on rapid clicks).
-- Add `src/robot_common_keywords/ui_validation/link.resource` (1 keyword: navigates to target via
-  URL change).
-- Extend `tests/fixtures/text_form.html` with priority/severity radio groups,
-  conditional button, debounced button + counter, anchor link + scroll target.
-- Extend `src/robot_common_keywords/form_validation/phone_field.resource` with 2 keywords:
-  `Validate Phone Boundary Length` (E.164 min/max digit-count boundaries) and
-  `Validate Phone Country Rule Violations` (cycles per-country
-  `country_rule_invalid_samples` for apps that enforce R007/R008/R009).
-- Add `include_universal=${True}` argument to `Validate Phone Field` so the
-  keyword also cycles a top-level `universal_invalid_samples` block (letters,
-  SQLi/XSS payloads, Unicode digit variants). Backward-compatible: empty
-  list when the YAML doesn't define the block.
-- Expand `src/robot_common_keywords/test_data/phone_formats.yaml` from 4 to 32 countries with rich
-  valid samples drawn from the phone-validation test plan; add
-  `universal_invalid_samples` and per-country `country_rule_invalid_samples`
-  for VN / US / UK.
-- Tighten phone fixture validator in `tests/fixtures/text_form.html` to also
-  reject digit counts > 15 (E.164 R003); add new strict-VN phone input for
-  the country-rule self-test.
-- Add `src/robot_common_keywords/libraries/yaml_loader.py` providing `Load YAML` (returns a recursive
-  `DotDict` so callers can use `${data.countries.VN}` attribute syntax). Resources
-  now reference it via `Library robot_common_keywords.libraries.yaml_loader` (src layout).
+## [0.1.1] — 2026-05-10
+
+Layout, packaging, expanded form/UI validation, and phone rules. After `pip install` or
+`pip install -e .`, use `Resource robot_common_keywords/...` and `Library robot_common_keywords.libraries...`.
+
+### Packaging & PyPI
+
+- Move package sources under `src/robot_common_keywords/` with setuptools **`package-data`** so
+  `.resource`, YAML, and JSON ship in the wheel and resolve from the **`robot_common_keywords`**
+  import path.
+- **`pyproject.toml`**: author **QuanUH**, **`[project.urls]`** (Homepage / Repository / Issues /
+  Changelog), **dynamic `version`** from `robot_common_keywords.__version__.__version__`.
+- **`README`**: PyPI + Python-version badges; primary install **`pip install robotframework-common-keywords`**;
+  contributor **`pip install -e .`** flow.
+- **`scripts/build-and-verify.sh`**: clean → build → **twine check** → wheel **`.resource` / YAML+JSON count**
+  parity vs source → smoke install → **`robot --dryrun`** (uses project **`.venv`** when present).
+- **`scripts/publish.sh`**: TestPyPI upload → install smoke → **`publish`** confirmation → PyPI upload → smoke.
+
+### BREAKING CHANGE — `Validate Email Field`
+
+- Default **`max_length`** is **`${None}`** (skip max-length assertions). Default **`min_length`** is
+  **`${None}`** (skip min-length assertions). Callers who need the RFC-style ceiling must pass **`max_length=254`** (or your product limit).
+- Passing **`min_length`** now requires **`> 6`** for the synthesized **`<prefix>u@a.co`** probe; otherwise
+  the keyword **`Fail`**s with guidance to omit **`min_length`** to skip min checking.
+- **Self-test**: `tests/test_email_field.robot` passes **`max_length=254`** for the full-suite case.
+
+### Changed — `Validate Email Field`
+
+- Invalid-format loop: **`Run Keyword And Continue On Failure`** so every **`invalid_emails.yaml`**
+  sample runs; failures aggregate instead of stopping at the first miss.
+- Min-length probe: prefix length **`min_length - 7`** so total address length is **`min_length − 1`**
+  (one under threshold).
+- **`Library robot_common_keywords.libraries.yaml_loader`** for YAML loading (`Load YAML`, **`DotDict`**).
+
+### Added — Form validation
+
+- **`datepicker.resource`** — searchable datepicker filtering + selection populates field.
+- **`text_area.resource`** — multiline content preserved round-trip.
+- Extend **`number_field.resource`** — rounding rule on blur + leading-zero handling.
+- Extend **`tests/fixtures/text_form.html`** — price/quantity, country picker, notes textarea.
+
+### Added — Phone validation & data
+
+- **`Validate Phone Boundary Length`** and **`Validate Phone Country Rule Violations`** (YAML-driven **`country_rule_invalid_samples`**).
+- **`include_universal=${True}`** on **`Validate Phone Field`** cycles **`universal_invalid_samples`** when present.
+- **`phone_formats.yaml`** — 32-country expansion; **`universal_invalid_samples`** & per-country **`country_rule_invalid_samples`** (e.g. VN / US / UK).
+- Stricter **`text_form.html`** phone fixture (digit-count cap; strict-VN field for country-rule tests).
+
+### Added — UI validation
+
+- **`checkbox.resource`** — default/toggle/check-all/indeterminate/auto-check-all.
+- **`radio.resource`** — default selection + mutual exclusion.
+- **`button.resource`** — conditional visibility + debounced rapid clicks.
+- **`link.resource`** — navigates via URL / anchor target assertion.
+- **`text_form.html`** — radio/debounce/link/conditional-button fixtures supporting the above.
+
+### Libraries
+
+- **`yaml_loader.py`** — **`Load YAML`**, **`DotDict`** (`${data.countries.VN}`\_-style attribute access).
 
 ## [0.1.0] — 2026-04-25 — Initial release
 

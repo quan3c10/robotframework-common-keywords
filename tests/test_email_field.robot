@@ -18,6 +18,7 @@ ${FIXTURE_URL}    file://${CURDIR}/fixtures/text_form.html
 Email Field Fully Validated In One Line
     [Tags]    p2    form-validation    email
     Validate Email Field    [data-test='email-val-input']
+    ...    max_length=254
     ...    required=${False}
     ...    error_locator=[data-test='email-val-error']
 
