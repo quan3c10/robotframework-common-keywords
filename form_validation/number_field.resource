@@ -120,6 +120,12 @@ Validate Number Rounding Rule
     ...                then reads the field's current value and asserts it equals
     ...                ``${expected_rounded_value}``.
     ...
+    ...                Behavior:
+    ...                1. Types ``${raw_value}`` into the field (clears first).
+    ...                2. Triggers validation via ``${trigger}``.
+    ...                3. Reads the field's ``value`` property after the trigger fires.
+    ...                4. Asserts it equals ``${expected_rounded_value}`` (exact string match).
+    ...
     ...                Useful for fields that apply server-side or JS rounding on
     ...                blur (e.g. toFixed(2) for price inputs). The assertion is
     ...                string-equal so "1.23" != "1.230" — pass the exact formatted
@@ -139,6 +145,22 @@ Validate Number Disallows Leading Zero
     ...                (error path). Passes when either condition is true so
     ...                both fix-in-place and reject-with-message implementations
     ...                satisfy the keyword.
+    ...
+    ...                Behavior:
+    ...                1. Types ``007`` into the field.
+    ...                2. Triggers validation via ``${trigger}``.
+    ...                3. Reads the field's ``value`` after the trigger.
+    ...                4. Asserts ONE of:
+    ...                   - the value was normalized to ``7`` (leading zeros stripped), OR
+    ...                   - a validation error became visible (matching
+    ...                     ``${error_message}`` or ``${error_locator}``).
+    ...
+    ...                Arguments:
+    ...                - ``field_locator``  — Playwright selector of the numeric input.
+    ...                - ``trigger``        — ``blur`` (default) or ``submit``.
+    ...                - ``submit_locator`` — required when ``trigger=submit``.
+    ...                - ``error_message``  — expected error text (used in error-path check).
+    ...                - ``error_locator``  — selector for the error element (used in error-path check).
     [Arguments]    ${field_locator}
     ...            ${trigger}=blur    ${submit_locator}=${EMPTY}
     ...            ${error_message}=${EMPTY}    ${error_locator}=${EMPTY}
@@ -147,7 +169,7 @@ Validate Number Disallows Leading Zero
     ${actual}=    Read Field Value    ${field_locator}
     ${stripped}=    Run Keyword And Return Status
     ...    Should Be Equal    ${actual}    7
-    ...    msg=Leading-zero strip check: expected '7', got '${actual}'.
+    ...    msg=Expected leading zeros stripped to '7', got '${actual}'.
     ${error_visible}=    Run Keyword And Return Status
     ...    Validation Error Should Be Visible
     ...    error_message=${error_message}    error_locator=${error_locator}    timeout=2s

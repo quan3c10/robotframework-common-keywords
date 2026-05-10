@@ -17,6 +17,15 @@ Validate Datepicker Search Filters Options
     ...                **visible** option matching ``${option_locator}``
     ...                contains ``${expected_match_substring}`` (case-insensitive).
     ...
+    ...                Behavior:
+    ...                1. Clicks ``${trigger_locator}`` to open the picker.
+    ...                2. Types ``${query}`` into ``${search_locator}``.
+    ...                3. Waits briefly for the option list to update.
+    ...                4. Asserts at least one visible option matching
+    ...                   ``${option_locator}`` exists.
+    ...                5. Asserts every visible option's text contains
+    ...                   ``${expected_match_substring}`` (exclusive filter).
+    ...
     ...                Arguments:
     ...                - ``trigger_locator``          — selector for the button/input that opens the panel.
     ...                - ``search_locator``           — selector for the search/filter input inside the panel.
@@ -52,6 +61,14 @@ Validate Datepicker Selection Populates Field
     ...                ``${option_locator}``, then asserts that
     ...                ``${field_locator}`` changed from its initial value and
     ...                now equals the option's visible text.
+    ...
+    ...                Behavior:
+    ...                1. Captures the initial value of ``${field_locator}``.
+    ...                2. Clicks ``${trigger_locator}`` to open the picker.
+    ...                3. Clicks the first element matching ``${option_locator}``.
+    ...                4. Captures the final value of ``${field_locator}``.
+    ...                5. Asserts the field changed AND now matches the
+    ...                   selected option's text.
     ...
     ...                Arguments:
     ...                - ``trigger_locator`` — selector for the open-panel trigger.

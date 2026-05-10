@@ -16,6 +16,14 @@ Validate Text Area Multiline Preserved
     ...                ``value`` property and asserts it equals the original
     ...                multi-line input exactly.
     ...
+    ...                Behavior:
+    ...                1. Constructs a 3-line input string with newline separators.
+    ...                2. Fills the textarea with the multi-line content.
+    ...                3. Triggers validation via ``${trigger}``.
+    ...                4. Reads the textarea's ``value`` property.
+    ...                5. Asserts the read-back value equals the input verbatim
+    ...                   (no whitespace mangling, newlines preserved).
+    ...
     ...                Arguments:
     ...                - ``field_locator``   — Playwright selector of the textarea.
     ...                - ``trigger``         — ``blur`` (default) or ``submit``.
