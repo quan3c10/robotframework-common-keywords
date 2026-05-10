@@ -11,7 +11,7 @@ Documentation    Date-field validations.
 Library          Browser
 Library          Collections
 Library          String
-Library          ../libraries/date_helpers.py
+Library          robot_common_keywords.libraries.date_helpers
 Resource         _helpers.resource
 
 

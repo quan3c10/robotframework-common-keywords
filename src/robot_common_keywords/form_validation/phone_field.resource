@@ -5,8 +5,8 @@ Documentation    Country-aware phone-field validation. Country rules live in
 Library          Browser
 Library          Collections
 Library          String
-Library          ../libraries/yaml_loader.py
-Library          ../libraries/phone_helpers.py
+Library          robot_common_keywords.libraries.yaml_loader
+Library          robot_common_keywords.libraries.phone_helpers
 Resource         _helpers.resource
 Resource         required_field.resource
 

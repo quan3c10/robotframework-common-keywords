@@ -3,7 +3,7 @@ Documentation    Self-tests for Validate Required Field against a local HTML
 ...              fixture. The fixture's Name input triggers an error span on
 ...              blur when empty.
 Library          Browser
-Resource         ../form_validation/required_field.resource
+Resource         robot_common_keywords/form_validation/required_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

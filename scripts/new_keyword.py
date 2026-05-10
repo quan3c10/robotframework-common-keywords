@@ -1,8 +1,8 @@
 """Scaffolder for new common-keywords.
 
 Generates `.resource` (default) or Python `@keyword` (`--python`) keyword
-files plus a self-test stub, and appends a placeholder row to
-docs/COVERAGE.md.
+files under ``src/robot_common_keywords/`` plus a self-test stub, and
+appends a placeholder row to docs/COVERAGE.md.
 
 See PROJECT_CONTEXT.md §5.2 for the manual checklist that follows the
 scaffold.
@@ -14,6 +14,8 @@ import argparse
 import sys
 from pathlib import Path
 from typing import Sequence
+
+PACKAGE_ROOT = Path("src") / "robot_common_keywords"
 
 
 _RESOURCE_TEMPLATE = """\
@@ -57,7 +59,7 @@ _SELF_TEST_TEMPLATE = """\
 Documentation    Self-test for {name}. TODO(new_keyword.py): describe
 ...              the fixture interaction this exercises.
 Library          Browser
-Resource         ../{domain}/{module}.resource
+Resource         robot_common_keywords/{domain}/{module}.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${{FIXTURE_URL}}
@@ -156,7 +158,7 @@ def _checklist(domain: str, module: str, python_mode: bool) -> str:
     """Return the manual checklist printed after a successful scaffold."""
     if python_mode:
         return (
-            f"\nScaffolded libraries/{module}.py.\n"
+            f"\nScaffolded src/robot_common_keywords/libraries/{module}.py.\n"
             "Next steps:\n"
             "  1. Replace TODO(new_keyword.py) markers with real implementation.\n"
             "  2. Add coverage in the consuming .resource file's self-test\n"
@@ -165,11 +167,13 @@ def _checklist(domain: str, module: str, python_mode: bool) -> str:
             "  4. Regenerate libdoc: ./scripts/generate-keyword-catalog.sh\n"
         )
     return (
-        f"\nScaffolded {domain}/{module}.resource and tests/test_{module}.robot.\n"
+        f"\nScaffolded src/robot_common_keywords/{domain}/{module}.resource "
+        f"and tests/test_{module}.robot.\n"
         "Next steps:\n"
         "  1. Replace TODO(new_keyword.py) markers in Documentation, Arguments, body.\n"
-        "  2. Add YAML test data under test_data/ if needed.\n"
-        f"  3. Run dryrun: robot --dryrun tests/test_{module}.robot\n"
+        "  2. Add YAML test data under src/robot_common_keywords/test_data/ if needed.\n"
+        f"  3. Run dryrun from repo root after pip install -e .: "
+        f"robot --dryrun tests/test_{module}.robot\n"
         "  4. Implement the keyword body until the self-test passes.\n"
         f"  5. Run full suite: robot -d results --exclude network tests/\n"
         "  6. Regenerate libdoc: ./scripts/generate-keyword-catalog.sh\n"
@@ -196,14 +200,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     coverage_path = cwd / "docs" / "COVERAGE.md"
 
     if args.python:
-        target = cwd / "libraries" / f"{args.module}.py"
+        target = cwd / PACKAGE_ROOT / "libraries" / f"{args.module}.py"
         if target.exists():
             print(f"error: {target} already exists; refusing to overwrite.",
                   file=sys.stderr)
             return 1
         target.write_text(render_python_library(name=args.name, module=args.module), encoding="utf-8")
     else:
-        resource = cwd / args.domain / f"{args.module}.resource"
+        resource = cwd / PACKAGE_ROOT / args.domain / f"{args.module}.resource"
         self_test = cwd / "tests" / f"test_{args.module}.robot"
         if resource.exists() or self_test.exists():
             print(f"error: {resource} or {self_test} already exists; "

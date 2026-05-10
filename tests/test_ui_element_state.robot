@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation    Self-tests for every keyword in ui_validation/element_state.resource.
 Library          Browser
-Resource         ../ui_validation/element_state.resource
+Resource         robot_common_keywords/ui_validation/element_state.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

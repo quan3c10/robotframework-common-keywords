@@ -40,7 +40,7 @@ def test_render_self_test_links_back_to_module_under_test():
         module="postal_code_field",
         domain="form_validation",
     )
-    assert "../form_validation/postal_code_field.resource" in rendered
+    assert "robot_common_keywords/form_validation/postal_code_field.resource" in rendered
     assert "Validate Postal Code Field Smoke" in rendered
     assert "fixtures/text_form.html" in rendered
     assert "Set Up Browser" in rendered
@@ -111,10 +111,11 @@ def _run_scaffolder(repo_root: Path, *args: str) -> subprocess.CompletedProcess:
 
 
 def _seed_minimal_layout(repo_root: Path) -> None:
-    (repo_root / "form_validation").mkdir()
-    (repo_root / "libraries").mkdir()
-    (repo_root / "tests").mkdir()
-    (repo_root / "docs").mkdir()
+    pkg = repo_root / "src" / "robot_common_keywords"
+    (pkg / "form_validation").mkdir(parents=True, exist_ok=True)
+    (pkg / "libraries").mkdir(parents=True, exist_ok=True)
+    (repo_root / "tests").mkdir(parents=True, exist_ok=True)
+    (repo_root / "docs").mkdir(parents=True, exist_ok=True)
     (repo_root / "docs" / "COVERAGE.md").write_text(
         "# Coverage\n\n| Keyword | Test | Coverage |\n|---|---|---|\n"
     )
@@ -129,7 +130,8 @@ def test_main_creates_resource_test_and_coverage(tmp_path):
         "--module", "postal_code_field",
     )
     assert result.returncode == 0, result.stderr
-    assert (tmp_path / "form_validation" / "postal_code_field.resource").is_file()
+    assert (tmp_path / "src" / "robot_common_keywords" / "form_validation" /
+            "postal_code_field.resource").is_file()
     assert (tmp_path / "tests" / "test_postal_code_field.robot").is_file()
     coverage = (tmp_path / "docs" / "COVERAGE.md").read_text()
     assert "Validate Postal Code Field" in coverage
@@ -176,7 +178,8 @@ def test_main_python_mode_creates_library(tmp_path):
         "--python",
     )
     assert result.returncode == 0, result.stderr
-    library = (tmp_path / "libraries" / "postal_code_helpers.py").read_text()
+    library = (tmp_path / "src" / "robot_common_keywords" / "libraries" /
+               "postal_code_helpers.py").read_text()
     assert '@keyword("Compute Postal Code Region")' in library
     # Python mode skips the Robot self-test stub but prints a reminder.
     assert not (tmp_path / "tests" / "test_postal_code_helpers.robot").exists()

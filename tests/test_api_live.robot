@@ -5,16 +5,15 @@ Documentation    Self-tests for api_validation/* against jsonplaceholder.
 ...              package never manages sessions.
 Library          RequestsLibrary
 Library          Collections
-Library          ../libraries/api_validation_helpers.py
-Resource         ../api_validation/status_codes.resource
-Resource         ../api_validation/response_schema.resource
-Resource         ../api_validation/response_time.resource
+Resource         robot_common_keywords/api_validation/status_codes.resource
+Resource         robot_common_keywords/api_validation/response_schema.resource
+Resource         robot_common_keywords/api_validation/response_time.resource
 Suite Setup      Create Session    api    https://jsonplaceholder.typicode.com    verify=${True}
 Suite Teardown   Delete All Sessions
 
 
 *** Variables ***
-${USER_SCHEMA}    ${CURDIR}/../test_data/schemas/user.schema.json
+${USER_SCHEMA}    ${CURDIR}/../src/robot_common_keywords/test_data/schemas/user.schema.json
 
 
 *** Test Cases ***

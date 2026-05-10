@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation    Self-tests for Validate Email Field against the local fixture.
 Library          Browser
-Resource         ../form_validation/email_field.resource
+Resource         robot_common_keywords/form_validation/email_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}
@@ -23,7 +23,7 @@ Email Field Fully Validated In One Line
 
 Email Field Accepts Every Curated Valid Sample
     [Tags]    p2    form-validation    email    valid-samples
-    ${valid}=    Load YAML    ${CURDIR}/../test_data/valid_emails.yaml
+    ${valid}=    Load YAML    ${CURDIR}/../src/robot_common_keywords/test_data/valid_emails.yaml
     FOR    ${good}    IN    @{valid.valid_emails}
         Type Text    [data-test='email-val-input']    ${good}    delay=0 ms    clear=True
         Press Keys    [data-test='email-val-input']    Tab

@@ -64,19 +64,24 @@ Resource    robot_common_keywords/api_validation/status_codes.resource
 
 #### Editable installs (`pip install -e`)
 
-`pip install -e ./common-keywords` succeeds and works for **Python modules**
-(``import robot_common_keywords.libraries.api_validation_helpers`` resolves
-back to the source tree). However, **PEP 660 editable installs do not
-expose `.resource` files via the package path** — Robot's filesystem-based
-Resource lookup can't see them through the editable finder.
+Code and packaged data live under `src/robot_common_keywords/` and install as
+namespace `robot_common_keywords`. Run from the repo root:
+
+```bash
+pip install -e .
+robot --dryrun tests/
+```
+
+Self-tests resolve `Resource robot_common_keywords/…` like consumers; avoid
+suite-level `Library` declarations that duplicate a `.resource` which already
+imports the same Python helper (Robot would register duplicate keyword names).
 
 Rule of thumb:
 
-- **Developing common-keywords itself** → run its self-tests directly from
-  the source tree (`robot common-keywords/tests/`); they use relative paths.
-- **External consumers (other projects)** → use a regular install
-  (`pip install ./common-keywords`, no `-e`). Files get copied to
-  site-packages and Resource paths resolve cleanly.
+- **Developing this repo** → `pip install -e .` then `robot tests/…`; Playwright
+  must be installed locally (`rfbrowser init`).
+- **Downstream consumers** → `pip install` from wheel/sdist as usual unless you
+  choose editable for debugging.
 
 ### Browser Library
 

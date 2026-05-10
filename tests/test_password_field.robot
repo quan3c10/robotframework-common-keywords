@@ -4,7 +4,7 @@ Documentation    Self-tests for Validate Password Field. Covers all three
 ...              keyword against three differently-configured fields — one
 ...              argument (``policy=``) is the only difference.
 Library          Browser
-Resource         ../form_validation/password_field.resource
+Resource         robot_common_keywords/form_validation/password_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

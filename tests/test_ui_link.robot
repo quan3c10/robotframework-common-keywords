@@ -3,7 +3,7 @@ Documentation    Self-tests for every keyword in ui_validation/link.resource.
 ...              Exercises URL-change navigation via the anchor link fixture in
 ...              tests/fixtures/text_form.html.
 Library          Browser
-Resource         ../ui_validation/link.resource
+Resource         robot_common_keywords/ui_validation/link.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

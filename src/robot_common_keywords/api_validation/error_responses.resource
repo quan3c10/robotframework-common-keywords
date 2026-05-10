@@ -3,9 +3,7 @@ Documentation    Error-response validations. The "standard format" checked
 ...              here is the widely-used ``{error, message}`` envelope with
 ...              optional ``code`` and ``details``. Field names are
 ...              customisable per-API.
-Library          ../libraries/api_validation_helpers.py
-
-
+Library          robot_common_keywords.libraries.api_validation_helpers
 *** Keywords ***
 Error Response Should Follow Standard Format
     [Documentation]    Asserts the response body has at least an ``error``

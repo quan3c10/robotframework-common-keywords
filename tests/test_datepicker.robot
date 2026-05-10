@@ -2,7 +2,7 @@
 Documentation    Self-tests for form_validation/datepicker.resource.
 ...              Uses the country-picker widget in tests/fixtures/text_form.html.
 Library          Browser
-Resource         ../form_validation/datepicker.resource
+Resource         robot_common_keywords/form_validation/datepicker.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

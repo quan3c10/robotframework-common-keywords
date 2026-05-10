@@ -4,7 +4,7 @@ Documentation    Self-tests for every keyword in ui_validation/checkbox.resource
 ...              state, and auto-check-all behaviours against the checkbox fixture
 ...              section in tests/fixtures/text_form.html.
 Library          Browser
-Resource         ../ui_validation/checkbox.resource
+Resource         robot_common_keywords/ui_validation/checkbox.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

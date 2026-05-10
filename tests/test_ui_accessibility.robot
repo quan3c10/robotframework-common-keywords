@@ -3,7 +3,7 @@ Documentation    Self-tests for every keyword in ui_validation/accessibility.res
 ...              These keywords are NOT a WCAG compliance check — they assert
 ...              three specific things. See the resource docstring.
 Library          Browser
-Resource         ../ui_validation/accessibility.resource
+Resource         robot_common_keywords/ui_validation/accessibility.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

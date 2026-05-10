@@ -3,7 +3,7 @@ Documentation    Self-tests for every keyword in form_validation/text_field.reso
 ...              Runs against the local HTML fixture where each field exercises
 ...              one specific validation behavior.
 Library          Browser
-Resource         ../form_validation/text_field.resource
+Resource         robot_common_keywords/form_validation/text_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

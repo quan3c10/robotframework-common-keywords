@@ -7,7 +7,7 @@ Documentation    Integration proof: Validate Required Field works against a
 ...
 ...              Tag: ``network`` — exclude with ``-e network`` when offline.
 Library          Browser
-Resource         ../form_validation/required_field.resource
+Resource         robot_common_keywords/form_validation/required_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${LOGIN_URL}

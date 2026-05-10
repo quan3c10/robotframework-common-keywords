@@ -2,9 +2,7 @@
 Documentation    Pagination envelope validations. Assumes a response body
 ...              shaped roughly as ``{page, per_page, total, data: [...]}``.
 ...              Field names are customisable per-API via arguments.
-Library          ../libraries/api_validation_helpers.py
-
-
+Library          robot_common_keywords.libraries.api_validation_helpers
 *** Keywords ***
 Response Should Be Paginated
     [Documentation]    Asserts the response body contains (at minimum) the

@@ -5,8 +5,8 @@ Documentation    Policy-driven password-field validation. Policies live in
 Library          Browser
 Library          Collections
 Library          String
-Library          ../libraries/password_helpers.py
-Library          ../libraries/boundary_generator.py
+Library          robot_common_keywords.libraries.password_helpers
+Library          robot_common_keywords.libraries.boundary_generator
 Resource         _helpers.resource
 Resource         required_field.resource
 

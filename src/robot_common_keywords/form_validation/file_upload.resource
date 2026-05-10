@@ -10,7 +10,7 @@ Documentation    File-upload validations. Relies on ``<input type="file">``
 ...              (typically in ``[Teardown]``).
 Library          Browser
 Library          Collections
-Library          ../libraries/file_helpers.py
+Library          robot_common_keywords.libraries.file_helpers
 Resource         _helpers.resource
 
 

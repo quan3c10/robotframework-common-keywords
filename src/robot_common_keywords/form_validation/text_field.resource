@@ -5,7 +5,7 @@ Documentation    Text-field validations: length, character class, whitespace,
 Library          Browser
 Library          String
 Library          Collections
-Library          ../libraries/boundary_generator.py
+Library          robot_common_keywords.libraries.boundary_generator
 Resource         _helpers.resource
 
 

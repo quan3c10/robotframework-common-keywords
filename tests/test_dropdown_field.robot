@@ -2,7 +2,7 @@
 Documentation    Self-tests for every keyword in form_validation/dropdown_field.resource.
 Library          Browser
 Library          Collections
-Resource         ../form_validation/dropdown_field.resource
+Resource         robot_common_keywords/form_validation/dropdown_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

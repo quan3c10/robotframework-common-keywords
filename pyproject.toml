@@ -63,39 +63,13 @@ addopts = "--import-mode=importlib"
 pythonpath = ["scripts"]
 
 
-[tool.setuptools]
-# Map every Python package name under `robot_common_keywords` to its actual
-# on-disk directory so testers can `Resource robot_common_keywords/...`.
-# Keeps the current on-disk layout without physically moving anything.
-packages = [
-    "robot_common_keywords",
-    "robot_common_keywords.form_validation",
-    "robot_common_keywords.api_validation",
-    "robot_common_keywords.ui_validation",
-    "robot_common_keywords.data_generators",
-    "robot_common_keywords.libraries",
-    "robot_common_keywords.test_data",
-    "robot_common_keywords.test_data.schemas",
-    "robot_common_keywords.test_data.sample_files",
-]
-
-[tool.setuptools.package-dir]
-"robot_common_keywords" = "."
-"robot_common_keywords.form_validation" = "form_validation"
-"robot_common_keywords.api_validation" = "api_validation"
-"robot_common_keywords.ui_validation" = "ui_validation"
-"robot_common_keywords.data_generators" = "data_generators"
-"robot_common_keywords.libraries" = "libraries"
-"robot_common_keywords.test_data" = "test_data"
-"robot_common_keywords.test_data.schemas" = "test_data/schemas"
-"robot_common_keywords.test_data.sample_files" = "test_data/sample_files"
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
-"robot_common_keywords" = ["*.md"]
-"robot_common_keywords.form_validation" = ["*.resource"]
-"robot_common_keywords.api_validation" = ["*.resource"]
-"robot_common_keywords.ui_validation" = ["*.resource"]
-"robot_common_keywords.data_generators" = ["*.resource"]
-"robot_common_keywords.test_data" = ["*.yaml"]
-"robot_common_keywords.test_data.schemas" = ["*.json"]
-"robot_common_keywords.test_data.sample_files" = ["*"]
+robot_common_keywords = [
+    "**/*.resource",
+    "**/*.yaml",
+    "**/*.json",
+    "test_data/sample_files/*",
+]

@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation    Self-tests for every keyword in form_validation/number_field.resource.
 Library          Browser
-Resource         ../form_validation/number_field.resource
+Resource         robot_common_keywords/form_validation/number_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

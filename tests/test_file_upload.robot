@@ -3,8 +3,7 @@ Documentation    Self-tests for form_validation/file_upload.resource.
 ...              Oversize files created mid-test are deleted in Test Teardown
 ...              — nothing should remain on disk after the suite completes.
 Library          Browser
-Library          ../libraries/file_helpers.py
-Resource         ../form_validation/file_upload.resource
+Resource         robot_common_keywords/form_validation/file_upload.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

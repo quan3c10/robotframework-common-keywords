@@ -3,9 +3,7 @@ Documentation    Response-time assertions. Reads ``response.elapsed`` — the
 ...              time between sending the request and receiving the final
 ...              byte of the response (excludes DNS). For end-to-end latency
 ...              tests that include DNS/TLS, use a dedicated performance tool.
-Library          ../libraries/api_validation_helpers.py
-
-
+Library          robot_common_keywords.libraries.api_validation_helpers
 *** Keywords ***
 Response Time Should Be Below
     [Documentation]    Asserts the response was received in under ``max_seconds``.

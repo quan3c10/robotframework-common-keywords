@@ -4,9 +4,7 @@ Documentation    Response status-code assertions. All keywords accept a
 ...              with a ``.status_code`` attribute). The caller is
 ...              responsible for obtaining that response — this package
 ...              does **not** manage HTTP sessions.
-Library          ../libraries/api_validation_helpers.py
-
-
+Library          robot_common_keywords.libraries.api_validation_helpers
 *** Keywords ***
 Response Should Be Success
     [Documentation]    Asserts ``response.status_code`` is in the 2xx range.

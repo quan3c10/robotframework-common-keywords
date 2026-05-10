@@ -1,8 +1,6 @@
 *** Settings ***
 Documentation    JSON-schema and field-level validations for API responses.
-Library          ../libraries/api_validation_helpers.py
-
-
+Library          robot_common_keywords.libraries.api_validation_helpers
 *** Keywords ***
 Response Should Match Schema
     [Documentation]    Validates the response body against a JSON Schema

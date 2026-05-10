@@ -4,8 +4,8 @@ Documentation    Email-field validation. The single public keyword
 ...              can cover a whole field in one line.
 Library          Browser
 Library          Collections
-Library          ../libraries/yaml_loader.py
-Library          ../libraries/boundary_generator.py
+Library          robot_common_keywords.libraries.yaml_loader
+Library          robot_common_keywords.libraries.boundary_generator
 Resource         _helpers.resource
 Resource         required_field.resource
 Resource         text_field.resource

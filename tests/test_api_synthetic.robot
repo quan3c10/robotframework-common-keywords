@@ -5,17 +5,16 @@ Documentation    Self-tests for api_validation/* that do NOT need a live
 ...              exercises the validation logic deterministically and
 ...              runs in under a second.
 Library          Collections
-Library          ../libraries/api_validation_helpers.py
-Library          ../libraries/password_helpers.py
-Resource         ../api_validation/status_codes.resource
-Resource         ../api_validation/pagination.resource
-Resource         ../api_validation/error_responses.resource
+Library          robot_common_keywords.libraries.password_helpers
+Resource         robot_common_keywords/api_validation/status_codes.resource
+Resource         robot_common_keywords/api_validation/pagination.resource
+Resource         robot_common_keywords/api_validation/error_responses.resource
 
 
 *** Variables ***
-${USER_SCHEMA}          ${CURDIR}/../test_data/schemas/user.schema.json
-${PAGINATED_SCHEMA}     ${CURDIR}/../test_data/schemas/paginated_users.schema.json
-${ERROR_SCHEMA}         ${CURDIR}/../test_data/schemas/error.schema.json
+${USER_SCHEMA}          ${CURDIR}/../src/robot_common_keywords/test_data/schemas/user.schema.json
+${PAGINATED_SCHEMA}     ${CURDIR}/../src/robot_common_keywords/test_data/schemas/paginated_users.schema.json
+${ERROR_SCHEMA}         ${CURDIR}/../src/robot_common_keywords/test_data/schemas/error.schema.json
 
 
 *** Test Cases ***

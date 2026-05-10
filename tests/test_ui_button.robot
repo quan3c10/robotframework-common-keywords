@@ -4,7 +4,7 @@ Documentation    Self-tests for every keyword in ui_validation/button.resource.
 ...              and debounce on rapid clicks against the ui-controls fixture in
 ...              tests/fixtures/text_form.html.
 Library          Browser
-Resource         ../ui_validation/button.resource
+Resource         robot_common_keywords/ui_validation/button.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

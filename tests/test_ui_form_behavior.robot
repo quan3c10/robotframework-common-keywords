@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation    Self-tests for every keyword in ui_validation/form_behavior.resource.
 Library          Browser
-Resource         ../ui_validation/form_behavior.resource
+Resource         robot_common_keywords/ui_validation/form_behavior.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

@@ -4,9 +4,9 @@ Documentation    Self-tests for Phase 2 data-generator helpers. Proves the
 ...              behave as documented.
 Library          String
 Library          Collections
-Library          ../libraries/boundary_generator.py
-Library          ../libraries/faker_wrapper.py
-Resource         ../data_generators/invalid_data.resource
+Library          robot_common_keywords.libraries.boundary_generator
+Library          robot_common_keywords.libraries.faker_wrapper
+Resource         robot_common_keywords/data_generators/invalid_data.resource
 
 
 *** Test Cases ***

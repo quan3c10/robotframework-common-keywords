@@ -2,7 +2,7 @@
 Documentation    Self-tests for Validate URL Field. Covers http/https default,
 ...              require_https enforcement, and the malformed-URL reject loop.
 Library          Browser
-Resource         ../form_validation/url_field.resource
+Resource         robot_common_keywords/form_validation/url_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}

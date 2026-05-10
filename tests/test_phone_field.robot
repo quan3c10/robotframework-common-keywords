@@ -2,7 +2,7 @@
 Documentation    Self-tests for Validate Phone Field. Same keyword, two
 ...              countries — proves the country parameter is all you need.
 Library          Browser
-Resource         ../form_validation/phone_field.resource
+Resource         robot_common_keywords/form_validation/phone_field.resource
 Suite Setup      Set Up Browser
 Suite Teardown   Close Browser    ALL
 Test Setup       Go To    ${FIXTURE_URL}
