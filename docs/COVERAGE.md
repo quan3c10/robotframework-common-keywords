@@ -29,8 +29,10 @@ keywords or tests.
 | `Validate Whitespace Trimmed` | `test_text_field.robot :: Whitespace Is Trimmed On Blur` | Direct |
 | `Validate Case Sensitivity` | `test_text_field.robot :: Case Is Preserved When Sensitive True` & `Case Is Lowercased When Sensitive False` | Direct |
 | `Validate Email Field` | `test_email_field.robot :: Email Field Fully Validated In One Line` | Direct |
-| `Validate Phone Field` | `test_phone_field.robot` (4 country tests: VN / US / JP / UK) | Direct |
+| `Validate Phone Field` | `test_phone_field.robot` (5 country tests: VN / US / JP / UK / DE smoke + universal-samples on/off pair) | Direct |
 | `Validate Country Code Prefix` | `test_phone_field.robot :: Country Code Prefix Is Accepted` | Direct |
+| `Validate Phone Boundary Length` | `test_phone_field.robot :: Phone Boundary Length Holds At E164 Limits` | Direct |
+| `Validate Phone Country Rule Violations` | `test_phone_field.robot :: VN Strict Field Rejects Country Rule Violations` & `Country Rule Violations Skipped When Country Has No Strict Rules` | Direct |
 | `Validate URL Field` | `test_url_field.robot` (http/https + require_https cases) | Direct |
 | `Validate Number Field` | `test_number_field.robot :: Number Field Enforces Range And Rejects Non-Numeric` | Direct |
 | `Validate Integer Only` | `test_number_field.robot :: Integer Only Field Rejects Decimals` | Direct |

@@ -2,12 +2,43 @@
 # Add a new country by appending a new entry under `countries:` — no code
 # changes required.
 #
-# Per-country shape:
-#   min_length:      minimum digit count the app should accept
-#   max_length:      maximum digit count the app should accept
-#   prefix:          E.164 prefix, e.g. "+84"
-#   valid_samples:   3+ numbers the app MUST accept
-#   invalid_samples: 3+ strings the app MUST reject
+# Schema:
+#   universal_invalid_samples (top level): cross-cutting negatives every
+#     shape-style validator should reject (letters, special chars, Unicode
+#     digits, SQLi/XSS payloads, etc.). Cycled by Validate Phone Field when
+#     include_universal=${True} (default). Optional — defaults to empty list
+#     for backward compatibility.
+#
+#   countries.<ISO>:
+#     min_length:                 minimum digit count the app accepts
+#     max_length:                 maximum digit count the app accepts
+#     prefix:                     E.164 prefix, e.g. "+84"
+#     valid_samples:              numbers the app MUST accept (≥1)
+#     invalid_samples:            shape failures the app MUST reject (≥1)
+#     country_rule_invalid_samples: optional — country-rule violations (e.g.
+#       wrong VN mobile prefix). Cycled only by Validate Phone Country Rule
+#       Violations, against an app/fixture that enforces R007–R009.
+
+universal_invalid_samples:
+  # Letters / vanity numbers (R006)
+  - "abc-def-ghij"
+  - "1800-FLOWERS"
+  # Special / structural characters (R006, R014)
+  - "@@@###$$$"
+  - "123|456/789"
+  # Random separators not in the allowed set (R004)
+  - "12.34.56.78.90"
+  # Below universal minimum length (R002 — 7 digits)
+  - "12345"
+  # Bracket-only / formatting noise (R002)
+  - "()()()"
+  # Security payloads (R014)
+  - "'; DROP TABLE users"
+  - "<script>alert()"
+  # Unicode digit variants (R013)
+  - "٩٨٧٦٥٤٣٢١٠"
+  - "１２３４５６７８９０"
+
 
 countries:
 
@@ -16,26 +47,74 @@ countries:
     max_length: 13
     prefix: "+84"
     valid_samples:
-      - "0912345678"
-      - "+84912345678"
-      - "0987 654 321"
+      - "+84 903 123 456"
+      - "0903123456"
+      - "+84 789 456 123"
+      - "0812 345 678"
+      - "0594 567 890"
     invalid_samples:
-      - "123"
       - "abc"
       - "notaphone"
+    # R007: VN mobile pattern ^(\+84|0)(3[2-9]|5[6-9]|7[06-9]|8[1-9]|9[0-9])\d{7}$
+    country_rule_invalid_samples:
+      - "0234567890"     # wrong prefix 02x
+      - "090123456"      # only 9 digits
+      - "09012345678"    # 11 digits — old format
 
   US:
     min_length: 10
     max_length: 14
     prefix: "+1"
     valid_samples:
-      - "5551234567"
-      - "+15551234567"
-      - "555 123 4567"
+      - "(212) 555-1234"
+      - "+1 415 555 2671"
+      - "800-555-0100"
+      - "2125551234"
+      - "+1 604 555 0198"
     invalid_samples:
-      - "123"
       - "abc"
       - "phonenumber"
+    # R008: NANP — area code must start [2-9], no 000.
+    country_rule_invalid_samples:
+      - "(000) 555-1234"
+      - "0000000000"
+      - "1111111111"
+
+  UK:
+    min_length: 10
+    max_length: 13
+    prefix: "+44"
+    valid_samples:
+      - "+44 7700 900123"
+      - "+44 20 7946 0958"
+      - "02012345678"
+      - "+442012345678"
+    invalid_samples:
+      - "abc"
+      - "not-a-number"
+    # R009: UK mobile must be 07xxx — so +44 1700 ... is invalid for mobile.
+    country_rule_invalid_samples:
+      - "+44 1700 900123"
+
+  DE:
+    min_length: 10
+    max_length: 14
+    prefix: "+49"
+    valid_samples:
+      - "+49 151 12345678"
+      - "+49 30 12345678"
+    invalid_samples:
+      - "abc"
+
+  FR:
+    min_length: 9
+    max_length: 13
+    prefix: "+33"
+    valid_samples:
+      - "+33 6 12 34 56 78"
+      - "+33 1 23 45 67 89"
+    invalid_samples:
+      - "abc"
 
   JP:
     min_length: 10
@@ -45,20 +124,249 @@ countries:
       - "0312345678"
       - "+81312345678"
       - "090 1234 5678"
+      - "+81 90 1234 5678"
+      - "+81 3 1234 5678"
     invalid_samples:
-      - "123"
       - "abc"
       - "not-a-phone"
 
-  UK:
+  CN:
+    min_length: 11
+    max_length: 14
+    prefix: "+86"
+    valid_samples:
+      - "+86 138 0013 8000"
+      - "+86 10 1234 5678"
+    invalid_samples:
+      - "abc"
+
+  IN:
     min_length: 10
     max_length: 13
-    prefix: "+44"
+    prefix: "+91"
     valid_samples:
-      - "02012345678"
-      - "+442012345678"
-      - "020 1234 5678"
+      - "+91 98765 43210"
+      - "+91 22 2345 6789"
     invalid_samples:
-      - "12"
       - "abc"
-      - "not-a-number"
+
+  BR:
+    min_length: 10
+    max_length: 14
+    prefix: "+55"
+    valid_samples:
+      - "+55 11 9 8765 4321"
+      - "+55 11 3456 7890"
+    invalid_samples:
+      - "abc"
+
+  AU:
+    min_length: 9
+    max_length: 13
+    prefix: "+61"
+    valid_samples:
+      - "+61 412 345 678"
+      - "+61 2 9876 5432"
+    invalid_samples:
+      - "abc"
+
+  CA:
+    min_length: 10
+    max_length: 14
+    prefix: "+1"
+    valid_samples:
+      - "+1 604 555 0198"
+    invalid_samples:
+      - "abc"
+
+  KR:
+    min_length: 9
+    max_length: 13
+    prefix: "+82"
+    valid_samples:
+      - "+82 10 1234 5678"
+      - "+82 2 1234 5678"
+    invalid_samples:
+      - "abc"
+
+  SG:
+    min_length: 8
+    max_length: 12
+    prefix: "+65"
+    valid_samples:
+      - "+65 9123 4567"
+      - "+65 6123 4567"
+    invalid_samples:
+      - "abc"
+
+  TH:
+    min_length: 9
+    max_length: 13
+    prefix: "+66"
+    valid_samples:
+      - "+66 81 234 5678"
+      - "+66 2 123 4567"
+    invalid_samples:
+      - "abc"
+
+  ID:
+    min_length: 9
+    max_length: 14
+    prefix: "+62"
+    valid_samples:
+      - "+62 812 3456 7890"
+    invalid_samples:
+      - "abc"
+
+  MY:
+    min_length: 9
+    max_length: 13
+    prefix: "+60"
+    valid_samples:
+      - "+60 12 345 6789"
+    invalid_samples:
+      - "abc"
+
+  PH:
+    min_length: 10
+    max_length: 14
+    prefix: "+63"
+    valid_samples:
+      - "+63 917 123 4567"
+    invalid_samples:
+      - "abc"
+
+  RU:
+    min_length: 10
+    max_length: 14
+    prefix: "+7"
+    valid_samples:
+      - "+7 912 345 67 89"
+    invalid_samples:
+      - "abc"
+
+  AE:
+    min_length: 9
+    max_length: 13
+    prefix: "+971"
+    valid_samples:
+      - "+971 50 123 4567"
+    invalid_samples:
+      - "abc"
+
+  SA:
+    min_length: 9
+    max_length: 13
+    prefix: "+966"
+    valid_samples:
+      - "+966 50 123 4567"
+    invalid_samples:
+      - "abc"
+
+  EG:
+    min_length: 10
+    max_length: 14
+    prefix: "+20"
+    valid_samples:
+      - "+20 10 1234 5678"
+    invalid_samples:
+      - "abc"
+
+  ZA:
+    min_length: 9
+    max_length: 13
+    prefix: "+27"
+    valid_samples:
+      - "+27 71 123 4567"
+    invalid_samples:
+      - "abc"
+
+  NG:
+    min_length: 10
+    max_length: 14
+    prefix: "+234"
+    valid_samples:
+      - "+234 803 123 4567"
+    invalid_samples:
+      - "abc"
+
+  KE:
+    min_length: 9
+    max_length: 13
+    prefix: "+254"
+    valid_samples:
+      - "+254 712 345 678"
+    invalid_samples:
+      - "abc"
+
+  MX:
+    min_length: 10
+    max_length: 14
+    prefix: "+52"
+    valid_samples:
+      - "+52 1 55 1234 5678"
+    invalid_samples:
+      - "abc"
+
+  AR:
+    min_length: 10
+    max_length: 14
+    prefix: "+54"
+    valid_samples:
+      - "+54 9 11 1234 5678"
+    invalid_samples:
+      - "abc"
+
+  ES:
+    min_length: 9
+    max_length: 13
+    prefix: "+34"
+    valid_samples:
+      - "+34 612 345 678"
+    invalid_samples:
+      - "abc"
+
+  IT:
+    min_length: 10
+    max_length: 14
+    prefix: "+39"
+    valid_samples:
+      - "+39 312 345 6789"
+    invalid_samples:
+      - "abc"
+
+  NL:
+    min_length: 9
+    max_length: 13
+    prefix: "+31"
+    valid_samples:
+      - "+31 6 12345678"
+    invalid_samples:
+      - "abc"
+
+  CH:
+    min_length: 9
+    max_length: 13
+    prefix: "+41"
+    valid_samples:
+      - "+41 76 123 45 67"
+    invalid_samples:
+      - "abc"
+
+  SE:
+    min_length: 9
+    max_length: 13
+    prefix: "+46"
+    valid_samples:
+      - "+46 70 123 45 67"
+    invalid_samples:
+      - "abc"
+
+  PL:
+    min_length: 9
+    max_length: 13
+    prefix: "+48"
+    valid_samples:
+      - "+48 601 234 567"
+    invalid_samples:
+      - "abc"

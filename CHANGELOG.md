@@ -26,6 +26,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   URL change).
 - Extend `tests/fixtures/text_form.html` with priority/severity radio groups,
   conditional button, debounced button + counter, anchor link + scroll target.
+- Extend `form_validation/phone_field.resource` with 2 keywords:
+  `Validate Phone Boundary Length` (E.164 min/max digit-count boundaries) and
+  `Validate Phone Country Rule Violations` (cycles per-country
+  `country_rule_invalid_samples` for apps that enforce R007/R008/R009).
+- Add `include_universal=${True}` argument to `Validate Phone Field` so the
+  keyword also cycles a top-level `universal_invalid_samples` block (letters,
+  SQLi/XSS payloads, Unicode digit variants). Backward-compatible: empty
+  list when the YAML doesn't define the block.
+- Expand `test_data/phone_formats.yaml` from 4 to 32 countries with rich
+  valid samples drawn from the phone-validation test plan; add
+  `universal_invalid_samples` and per-country `country_rule_invalid_samples`
+  for VN / US / UK.
+- Tighten phone fixture validator in `tests/fixtures/text_form.html` to also
+  reject digit counts > 15 (E.164 R003); add new strict-VN phone input for
+  the country-rule self-test.
+- Add `libraries/yaml_loader.py` providing `Load YAML` (returns a recursive
+  `DotDict` so callers can use `${data.countries.VN}` attribute syntax). Fix
+  pre-existing wrong relative path in `form_validation/phone_field.resource`
+  (`../../libraries/...` → `../libraries/...`).
 
 ## [0.1.0] — 2026-04-25 — Initial release
 

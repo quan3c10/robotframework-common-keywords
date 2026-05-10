@@ -77,9 +77,15 @@
   </div>
 
   <div class="row">
-    <label for="phone-input">Phone (digits / spaces / + / () / -, 7-20 chars):</label>
+    <label for="phone-input">Phone (digits / spaces / + / () / -, 7-20 chars, ≤15 digits):</label>
     <input type="text" id="phone-input" data-test="phone-input" maxlength="20">
     <span class="error" data-test="phone-error">Please enter a valid phone number.</span>
+  </div>
+
+  <div class="row">
+    <label for="phone-strict-vn-input">Phone (Vietnam mobile — strict R007):</label>
+    <input type="text" id="phone-strict-vn-input" data-test="phone-strict-vn-input" maxlength="20">
+    <span class="error" data-test="phone-strict-vn-error">Please enter a valid Vietnamese mobile number.</span>
   </div>
 
   <div class="row">
@@ -574,12 +580,30 @@
         showError(emailValError, emailVal.value.length > 0 && !isValidEmail(emailVal.value));
       });
 
-      // 10. Phone — permissive format: digits/spaces/+/-/() only, 7-20 chars.
+      // 10. Phone — permissive format: digits/spaces/+/-/() only, 7-20 chars,
+      //     plus E.164 digit-count cap (≤15 digits, R003).
       const phone = document.querySelector('[data-test="phone-input"]');
       const phoneError = document.querySelector('[data-test="phone-error"]');
       const phoneRegex = /^[+\d\s()\-]{7,20}$/;
+      function isInvalidPhone(value) {
+        if (!phoneRegex.test(value)) return true;
+        const digitCount = (value.match(/\d/g) || []).length;
+        if (digitCount > 15) return true;
+        return false;
+      }
       phone.addEventListener('blur', () => {
-        showError(phoneError, phone.value.length > 0 && !phoneRegex.test(phone.value));
+        showError(phoneError, phone.value.length > 0 && isInvalidPhone(phone.value));
+      });
+
+      // 10b. Phone — Vietnam mobile, strict per R007.
+      const phoneStrictVn = document.querySelector('[data-test="phone-strict-vn-input"]');
+      const phoneStrictVnError = document.querySelector('[data-test="phone-strict-vn-error"]');
+      const vnRegex = /^(\+84|0)(3[2-9]|5[6-9]|7[06-9]|8[1-9]|9[0-9])\d{7}$/;
+      phoneStrictVn.addEventListener('blur', () => {
+        const v = phoneStrictVn.value.trim();
+        if (v.length === 0) { showError(phoneStrictVnError, false); return; }
+        const compact = v.replace(/[\s\-()]/g, '');
+        showError(phoneStrictVnError, !vnRegex.test(compact));
       });
 
       // 11. URL — accepts any parseable URL (http/https/ftp).
