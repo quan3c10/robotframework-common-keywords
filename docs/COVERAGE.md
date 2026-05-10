@@ -51,6 +51,11 @@ keywords or tests.
 | `Validate Dropdown Default Selection` | `test_dropdown_field.robot :: Dropdown Default Is Placeholder` | Direct |
 | `Validate Dropdown Is Required` | `test_dropdown_field.robot :: Dropdown Is Required And Reports Error When Empty` | Direct |
 | `Validate Dropdown Is Searchable` | `test_dropdown_field.robot :: Searchable Dropdown Filters Options On Query` | Direct |
+| `Validate Number Rounding Rule` | `test_number_field.robot :: Number Rounding Rule — Two Decimal Places On Blur` & `Number Rounding Rule — Wrong Expected Value Fails` | Direct (positive + negative) |
+| `Validate Number Disallows Leading Zero` | `test_number_field.robot :: Number Disallows Leading Zero — Strips To Bare Number` | Direct |
+| `Validate Datepicker Search Filters Options` | `test_datepicker.robot :: Datepicker Search Filter — Vietnam Matches Partial Query` | Direct |
+| `Validate Datepicker Selection Populates Field` | `test_datepicker.robot :: Datepicker Selection — Clicking Option Populates Field` | Direct |
+| `Validate Text Area Multiline Preserved` | `test_text_area.robot :: Text Area Multiline Content Is Preserved Round-Trip` | Direct |
 
 ### _helpers.resource (internal — transitively tested)
 

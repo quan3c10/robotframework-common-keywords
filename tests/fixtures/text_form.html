@@ -404,6 +404,97 @@
     <span class="error" data-test="submit-error">Please fill all mandatory fields before submitting.</span>
   </div>
 
+  <!-- ========== Price / quantity (rounding + leading-zero) ========== -->
+  <div class="row">
+    <label for="price-input">Price (rounded to 2 dp on blur):</label>
+    <input type="text" id="price-input" data-test="price-input">
+  </div>
+
+  <div class="row">
+    <label for="quantity-input">Quantity (no leading zeros):</label>
+    <input type="text" id="quantity-input" data-test="quantity-input">
+    <span class="error" data-test="quantity-error">Invalid quantity.</span>
+  </div>
+
+  <!-- ========== Country picker (search + selection) ========== -->
+  <div class="row">
+    <button type="button" data-test="country-picker-trigger">Choose Country</button>
+    <div data-test="country-picker-panel" hidden style="border:1px solid #ddd;padding:8px;margin-top:4px;">
+      <input type="text" data-test="country-search" placeholder="Search…">
+      <ul data-test="country-options-list" style="list-style:none;margin:4px 0 0 0;padding:0;">
+        <li data-test="country-option" data-value="US">United States</li>
+        <li data-test="country-option" data-value="VN">Vietnam</li>
+        <li data-test="country-option" data-value="JP">Japan</li>
+        <li data-test="country-option" data-value="UK">United Kingdom</li>
+      </ul>
+    </div>
+    <input type="text" data-test="country-input" readonly placeholder="No country selected">
+  </div>
+
+  <!-- ========== Notes textarea (multiline) ========== -->
+  <div class="row">
+    <label for="notes-textarea">Notes:</label>
+    <textarea id="notes-textarea" data-test="notes-textarea" rows="4"></textarea>
+  </div>
+
+  <script>
+    (function () {
+      // Price input — round to 2 decimal places on blur.
+      var priceInput = document.querySelector('[data-test="price-input"]');
+      priceInput.addEventListener('blur', function () {
+        var v = priceInput.value.trim();
+        if (v === '') return;
+        var n = parseFloat(v);
+        if (!isNaN(n)) priceInput.value = n.toFixed(2);
+      });
+
+      // Quantity input — strip leading zeros (or show error for non-numeric).
+      var qtyInput = document.querySelector('[data-test="quantity-input"]');
+      var qtyError = document.querySelector('[data-test="quantity-error"]');
+      qtyInput.addEventListener('blur', function () {
+        var v = qtyInput.value.trim();
+        if (v === '') { qtyError.classList.remove('visible'); return; }
+        var parsed = parseInt(v, 10);
+        if (isNaN(parsed) || !/^\d+$/.test(v)) {
+          qtyError.classList.add('visible');
+        } else {
+          qtyError.classList.remove('visible');
+          qtyInput.value = String(parsed);
+        }
+      });
+
+      // Country picker — toggle panel, search, selection.
+      var pickerTrigger = document.querySelector('[data-test="country-picker-trigger"]');
+      var pickerPanel   = document.querySelector('[data-test="country-picker-panel"]');
+      var countrySearch = document.querySelector('[data-test="country-search"]');
+      var countryInput  = document.querySelector('[data-test="country-input"]');
+      var countryOptions = document.querySelectorAll('[data-test="country-option"]');
+
+      pickerTrigger.addEventListener('click', function () {
+        pickerPanel.hidden = !pickerPanel.hidden;
+        if (!pickerPanel.hidden) {
+          countrySearch.value = '';
+          countryOptions.forEach(function (opt) { opt.hidden = false; });
+          countrySearch.focus();
+        }
+      });
+
+      countrySearch.addEventListener('input', function () {
+        var q = countrySearch.value.toLowerCase();
+        countryOptions.forEach(function (opt) {
+          opt.hidden = q.length > 0 && !opt.textContent.toLowerCase().includes(q);
+        });
+      });
+
+      countryOptions.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          countryInput.value = opt.textContent.trim();
+          pickerPanel.hidden = true;
+        });
+      });
+    })();
+  </script>
+
   <script>
     (function () {
       const showError = (err, show) => {

@@ -115,6 +115,45 @@ Validate Percentage Field
     ...    error_message=${error_message}    error_locator=${error_locator}
     ...    trigger=${trigger}    submit_locator=${submit_locator}
 
+Validate Number Rounding Rule
+    [Documentation]    Types ``${raw_value}`` into the field, triggers validation,
+    ...                then reads the field's current value and asserts it equals
+    ...                ``${expected_rounded_value}``.
+    ...
+    ...                Useful for fields that apply server-side or JS rounding on
+    ...                blur (e.g. toFixed(2) for price inputs). The assertion is
+    ...                string-equal so "1.23" != "1.230" — pass the exact formatted
+    ...                string the field emits.
+    [Arguments]    ${field_locator}    ${raw_value}    ${expected_rounded_value}
+    ...            ${trigger}=blur    ${submit_locator}=${EMPTY}
+    Type Text    ${field_locator}    ${raw_value}    delay=0 ms    clear=True
+    Trigger Field Validation    ${field_locator}    ${trigger}    ${submit_locator}
+    ${actual}=    Read Field Value    ${field_locator}
+    Should Be Equal    ${actual}    ${expected_rounded_value}
+    ...    msg=Rounding check failed: typed '${raw_value}', expected '${expected_rounded_value}', got '${actual}'.
+
+Validate Number Disallows Leading Zero
+    [Documentation]    Types ``007`` into the field, triggers validation, then
+    ...                checks whether the field value was normalised to ``7``
+    ...                (strip path) OR whether an error element became visible
+    ...                (error path). Passes when either condition is true so
+    ...                both fix-in-place and reject-with-message implementations
+    ...                satisfy the keyword.
+    [Arguments]    ${field_locator}
+    ...            ${trigger}=blur    ${submit_locator}=${EMPTY}
+    ...            ${error_message}=${EMPTY}    ${error_locator}=${EMPTY}
+    Type Text    ${field_locator}    007    delay=0 ms    clear=True
+    Trigger Field Validation    ${field_locator}    ${trigger}    ${submit_locator}
+    ${actual}=    Read Field Value    ${field_locator}
+    ${stripped}=    Run Keyword And Return Status
+    ...    Should Be Equal    ${actual}    7
+    ...    msg=Leading-zero strip check: expected '7', got '${actual}'.
+    ${error_visible}=    Run Keyword And Return Status
+    ...    Validation Error Should Be Visible
+    ...    error_message=${error_message}    error_locator=${error_locator}    timeout=2s
+    Should Be True    ${stripped} or ${error_visible}
+    ...    msg=Leading-zero check failed: value is '${actual}' and no error is visible.
+
 
 # --- Internal ---
 

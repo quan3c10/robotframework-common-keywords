@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- Extend `form_validation/number_field.resource` with 2 keywords:
+  rounding-rule check and leading-zero handling (strip-or-error).
+- Add `form_validation/datepicker.resource` (2 keywords: search filtering,
+  selection populates field).
+- Add `form_validation/text_area.resource` (1 keyword: multiline content
+  preserved through round-trip).
+- Extend `tests/fixtures/text_form.html` with price/quantity inputs,
+  country picker widget, and notes textarea.
 - Add `ui_validation/checkbox.resource` with 5 keywords for checkbox group
   validation (default state, toggle, check-all, indeterminate state,
   auto-check-all on full selection). Self-tests use new checkbox fixture

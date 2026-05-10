@@ -40,6 +40,27 @@ Percentage Field Enforces 0-100
     Validate Percentage Field    [data-test='percentage-input']
     ...    error_locator=[data-test='percentage-error']
 
+Number Rounding Rule — Two Decimal Places On Blur
+    [Tags]    p2    form-validation    number    rounding
+    Validate Number Rounding Rule
+    ...    [data-test='price-input']
+    ...    1.234
+    ...    1.23
+
+Number Rounding Rule — Wrong Expected Value Fails
+    [Tags]    p2    form-validation    number    rounding    negative
+    Run Keyword And Expect Error    *
+    ...    Validate Number Rounding Rule
+    ...    [data-test='price-input']
+    ...    1.234
+    ...    9.99
+
+Number Disallows Leading Zero — Strips To Bare Number
+    [Tags]    p2    form-validation    number    leading-zero
+    Validate Number Disallows Leading Zero
+    ...    [data-test='quantity-input']
+    ...    error_locator=[data-test='quantity-error']
+
 
 *** Keywords ***
 Set Up Browser
