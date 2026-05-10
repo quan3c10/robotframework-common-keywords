@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "robotframework-common-keywords"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Reusable validation keyword package for Robot Framework — one-line validations for forms, APIs, and UI state."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "Keyword-Driven Framework PoC" },
+    { name = "QuanUH", email = "quan3c10@gmail.com" },
 ]
 keywords = ["robotframework", "testing", "validation", "qa", "forms", "api"]
 classifiers = [
@@ -40,6 +40,12 @@ dependencies = [
     "pyyaml>=6.0",
 ]
 
+[project.urls]
+Homepage   = "https://github.com/quan3c10/robotframework-common-keywords"
+Repository = "https://github.com/quan3c10/robotframework-common-keywords"
+Issues     = "https://github.com/quan3c10/robotframework-common-keywords/issues"
+Changelog  = "https://github.com/quan3c10/robotframework-common-keywords/blob/main/CHANGELOG.md"
+
 [project.optional-dependencies]
 dev = [
     "robotframework-pabot>=4.0",
@@ -65,6 +71,9 @@ pythonpath = ["scripts"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "robot_common_keywords.__version__.__version__" }
 
 [tool.setuptools.package-data]
 robot_common_keywords = [
