@@ -22,14 +22,16 @@ schema rules come from YAML, nothing is hard-coded to any specific app.
 
 ## Installation
 
-### Option A — Git submodule (current default)
+### Option A — Git submodule
 
 ```bash
-git submodule add https://github.com/yourcompany/robot-common-keywords common-keywords
+git submodule add https://github.com/yourcompany/robotframework-common-keywords robotframework-common-keywords
 git submodule update --init --recursive
+pip install -e robotframework-common-keywords
 ```
 
-Add the Python dependencies to your project's `requirements.txt`:
+Add the Python dependencies to your project's `requirements.txt` (if not
+already pulled in transitively by this package):
 
 ```
 faker>=25.0
@@ -48,11 +50,11 @@ The package ships with a `pyproject.toml` so it installs with stock pip.
 Until we publish to PyPI, install from a local path or git URL:
 
 ```bash
-# From a local clone:
-pip install /path/to/keyword-driven-framework/common-keywords
+# From a local clone of this repo:
+pip install /path/to/robotframework-common-keywords
 
-# Or from GitHub (subdirectory):
-pip install "git+https://github.com/yourcompany/keyword-driven-framework.git#subdirectory=common-keywords"
+# Or from Git (monorepo subdirectory, if applicable):
+pip install "git+https://github.com/yourcompany/your-monorepo.git#subdirectory=robotframework-common-keywords"
 ```
 
 After installation, imports work via the package path:
@@ -102,10 +104,10 @@ validation families covered.**
 ```robot
 *** Settings ***
 Library     Browser
-Resource    common-keywords/form_validation/required_field.resource
-Resource    common-keywords/form_validation/email_field.resource
-Resource    common-keywords/form_validation/phone_field.resource
-Resource    common-keywords/form_validation/password_field.resource
+Resource    robot_common_keywords/form_validation/required_field.resource
+Resource    robot_common_keywords/form_validation/email_field.resource
+Resource    robot_common_keywords/form_validation/phone_field.resource
+Resource    robot_common_keywords/form_validation/password_field.resource
 Suite Setup       New Browser  chromium  headless=${True}
 Suite Setup       New Context
 Suite Setup       New Page
@@ -141,7 +143,7 @@ For more realistic examples, see [`docs/EXAMPLES.md`](docs/EXAMPLES.md).
 After adding or editing a keyword:
 
 ```bash
-./common-keywords/scripts/generate-keyword-catalog.sh
+./scripts/generate-keyword-catalog.sh
 ```
 
 The script overwrites every file in `docs/keyword-catalog/` with fresh
@@ -151,8 +153,12 @@ libdoc output. Commit the updated HTML alongside your keyword change.
 
 ## Directory layout
 
+Runtime imports use the **installed** package name `robot_common_keywords`
+(`Resource robot_common_keywords/...`). In the repo, those files live under
+`src/robot_common_keywords/`:
+
 ```
-common-keywords/
+src/robot_common_keywords/
 ├── form_validation/                      # 10 resources, 31 public keywords
 │   ├── required_field.resource
 │   ├── text_field.resource               # max/min/range length, char classes,
@@ -205,10 +211,14 @@ common-keywords/
 │   ├── password_helpers.py
 │   └── phone_helpers.py                  # wraps `phonenumbers`
 │
-├── tests/                                # 86 self-tests across 17 files
-│   └── fixtures/text_form.html           # single deterministic HTML fixture
-│
-└── docs/                                 # this README's friends
+├── __init__.py
+└── __version__.py
+
+tests/                                    # 86 self-tests across 17 files
+└── fixtures/text_form.html               # single deterministic HTML fixture
+
+docs/                                     # this README's friends
+scripts/                                  # new_keyword.py, catalog generator
 ```
 
 ---
@@ -221,10 +231,10 @@ From the project root:
 source .venv/bin/activate
 
 # Offline (no network) — 77 tests:
-robot -d results --exclude network common-keywords/tests/
+robot -d results --exclude network tests/
 
 # Full suite including jsonplaceholder.com integration (4 tests) — 86 tests:
-robot -d results common-keywords/tests/
+robot -d results tests/
 ```
 
 All 86 self-tests pass with every run. See [`docs/COVERAGE.md`](docs/COVERAGE.md)
@@ -234,7 +244,7 @@ for the full keyword → test mapping.
 
 ## Contributing
 
-### When does a keyword belong in `common-keywords`?
+### When does a keyword belong in `robot_common_keywords`?
 
 Ask: *"Would Team B, working on a totally different product, use this
 keyword as-is?"* If yes, it's common. If it references a specific URL,
@@ -253,7 +263,7 @@ field name, business rule, or validation message unique to your app, it's
    "Assertion failed" — quote the expected and actual values, the field
    locator, and what was tried.
 4. **Write a self-test.** Every new keyword requires one in
-   `common-keywords/tests/`. We use a deterministic local HTML fixture
+   `tests/`. We use a deterministic local HTML fixture
    (`tests/fixtures/text_form.html`) for flake-free runs; extend it if
    your keyword needs new behaviour.
 5. **Update the coverage report.** Add a row to
@@ -266,15 +276,15 @@ field name, business rule, or validation message unique to your app, it's
 No code changes required.
 
 - **Phone country**: add an entry under `countries:` in
-  `test_data/phone_formats.yaml`. See existing VN / US / JP / UK entries
+  `src/robot_common_keywords/test_data/phone_formats.yaml`. See existing VN / US / JP / UK entries
   for the shape.
 - **Password policy**: add an entry under `policies:` in
-  `test_data/password_policies.yaml`.
-- **JSON Schema**: drop a new `.schema.json` into `test_data/schemas/`.
+  `src/robot_common_keywords/test_data/password_policies.yaml`.
+- **JSON Schema**: drop a new `.schema.json` into `src/robot_common_keywords/test_data/schemas/`.
   Pass its path via the keyword's `schema_path` argument.
 
 ### Self-test requirement (no self-test = not merged)
 
 Every PR that adds or changes a keyword must include a self-test that
 **fails** on the old code and **passes** on the new code. The CI runs
-both `robot --dryrun common-keywords/tests/` and the full live suite.
+both `robot --dryrun tests/` and the full live suite.

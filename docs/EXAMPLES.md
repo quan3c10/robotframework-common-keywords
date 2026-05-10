@@ -1,6 +1,6 @@
 # Real-world Examples
 
-Five paste-ready scenarios showing `common-keywords` applied to the most
+Five paste-ready scenarios showing `robot_common_keywords` applied to the most
 common validation patterns. Each scenario stands alone — copy, swap the
 selectors for your app, adjust the data files, run.
 
@@ -21,14 +21,14 @@ birthdate, country, and avatar upload. One test case, 10 validation calls,
 ```robot
 *** Settings ***
 Library     Browser
-Resource    common-keywords/form_validation/required_field.resource
-Resource    common-keywords/form_validation/text_field.resource
-Resource    common-keywords/form_validation/email_field.resource
-Resource    common-keywords/form_validation/phone_field.resource
-Resource    common-keywords/form_validation/password_field.resource
-Resource    common-keywords/form_validation/date_field.resource
-Resource    common-keywords/form_validation/dropdown_field.resource
-Resource    common-keywords/form_validation/file_upload.resource
+Resource    robot_common_keywords/form_validation/required_field.resource
+Resource    robot_common_keywords/form_validation/text_field.resource
+Resource    robot_common_keywords/form_validation/email_field.resource
+Resource    robot_common_keywords/form_validation/phone_field.resource
+Resource    robot_common_keywords/form_validation/password_field.resource
+Resource    robot_common_keywords/form_validation/date_field.resource
+Resource    robot_common_keywords/form_validation/dropdown_field.resource
+Resource    robot_common_keywords/form_validation/file_upload.resource
 
 
 *** Test Cases ***
@@ -73,10 +73,10 @@ Inline validation fires on blur.
 ```robot
 *** Settings ***
 Library     Browser
-Resource    common-keywords/form_validation/required_field.resource
-Resource    common-keywords/form_validation/text_field.resource
-Resource    common-keywords/ui_validation/element_state.resource
-Resource    common-keywords/ui_validation/form_behavior.resource
+Resource    robot_common_keywords/form_validation/required_field.resource
+Resource    robot_common_keywords/form_validation/text_field.resource
+Resource    robot_common_keywords/ui_validation/element_state.resource
+Resource    robot_common_keywords/ui_validation/form_behavior.resource
 
 
 *** Test Cases ***
@@ -120,12 +120,12 @@ Payment section validates card format, CVV, and expiry date.
 ```robot
 *** Settings ***
 Library     Browser
-Resource    common-keywords/form_validation/required_field.resource
-Resource    common-keywords/form_validation/text_field.resource
-Resource    common-keywords/form_validation/phone_field.resource
-Resource    common-keywords/form_validation/number_field.resource
-Resource    common-keywords/form_validation/date_field.resource
-Resource    common-keywords/form_validation/dropdown_field.resource
+Resource    robot_common_keywords/form_validation/required_field.resource
+Resource    robot_common_keywords/form_validation/text_field.resource
+Resource    robot_common_keywords/form_validation/phone_field.resource
+Resource    robot_common_keywords/form_validation/number_field.resource
+Resource    robot_common_keywords/form_validation/date_field.resource
+Resource    robot_common_keywords/form_validation/dropdown_field.resource
 
 
 *** Test Cases ***
@@ -154,7 +154,7 @@ Checkout Form Complete Validation
 
 **To run the same test for a Canadian checkout**: change exactly one line
 (`country=US` → `country=CA`). No other changes. Add a `CA` entry to
-`test_data/phone_formats.yaml` and you're done.
+`src/robot_common_keywords/test_data/phone_formats.yaml` (or your installed package copy) and you're done.
 
 ---
 
@@ -167,9 +167,9 @@ All in one test, no hidden state.
 ```robot
 *** Settings ***
 Library     RequestsLibrary
-Resource    common-keywords/api_validation/status_codes.resource
-Resource    common-keywords/api_validation/response_schema.resource
-Resource    common-keywords/api_validation/response_time.resource
+Resource    robot_common_keywords/api_validation/status_codes.resource
+Resource    robot_common_keywords/api_validation/response_schema.resource
+Resource    robot_common_keywords/api_validation/response_time.resource
 Suite Setup    Create Session    api    https://your.api.example.com    verify=${True}
 
 
@@ -217,7 +217,7 @@ region. Year is required. Region is searchable.
 ```robot
 *** Settings ***
 Library     Browser
-Resource    common-keywords/form_validation/dropdown_field.resource
+Resource    robot_common_keywords/form_validation/dropdown_field.resource
 
 
 *** Test Cases ***
@@ -250,7 +250,8 @@ Filter UI Has Correct Dropdowns
 
 ## Composition notes
 
-These examples show **common-keywords used directly from tests**. In a
+These examples show **package keywords used directly from tests** (after
+`pip install -e .` or installing the wheel). In a
 real project, wrap them in project-specific business keywords under
 `keywords/business/` to capture org-level defaults (password policy, phone
 country, schema path locations). See

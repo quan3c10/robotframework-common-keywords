@@ -1,14 +1,15 @@
-# Integrating `common-keywords` with a Phase 1 Project
+# Integrating `robot_common_keywords` with a Phase 1 Project
 
 How project-specific business keywords (the Phase-1 layer in
 `keywords/business/`) compose with the project-agnostic keywords in this
-package.
+package (install with `pip install -e path/to/robotframework-common-keywords`
+or from a published wheel).
 
 - [The layering model](#the-layering-model)
 - [The locator boundary](#the-locator-boundary)
 - [Before / after: adding form validation to Phase 1](#before--after-adding-form-validation-to-phase-1)
 - [The bridge pattern](#the-bridge-pattern)
-- [When to fold an assertion into `common-keywords`](#when-to-fold-an-assertion-into-common-keywords)
+- [When to fold an assertion into `robot_common_keywords`](#when-to-fold-an-assertion-into-robot_common_keywords)
 
 ---
 
@@ -24,14 +25,14 @@ Business Keywords (Layer 2, project-specific)   ← keywords/business/
 Technical Keywords (Layer 3, project-specific)  ← keywords/technical/
 ```
 
-With `common-keywords` the picture becomes:
+With `robot_common_keywords` installed, the picture becomes:
 
 ```
 Test Case (Layer 1)
     ↓ uses
 Business Keywords (Layer 2, project-specific)
     ↓ uses
-    ├── Common Validation Keywords (Layer 2.5, project-agnostic)  ← this package
+    ├── Common validation keywords (Layer 2.5, project-agnostic)  ← `robot_common_keywords`
     │       ↓ uses
     │       ├── Python helpers (jsonschema, phonenumbers, faker)
     │       └── Browser Library / RequestsLibrary directly
@@ -39,10 +40,10 @@ Business Keywords (Layer 2, project-specific)
     └── Technical Keywords (Layer 3, project-specific)
 ```
 
-**Layer 2 stays project-specific.** The `common-keywords` layer sits *under*
+**Layer 2 stays project-specific.** The shared validation layer sits *under*
 project business keywords — testers still write domain verbs like
 `Registration Form Should Validate All Inputs`; the business keyword
-delegates the heavy lifting to `common-keywords`.
+delegates the heavy lifting to `robot_common_keywords`.
 
 ---
 
@@ -51,7 +52,7 @@ delegates the heavy lifting to `common-keywords`.
 Phase 1's business keywords pass **dotted locator names** (`login_page.username_field`)
 to their technical layer, which resolves them against a YAML map.
 
-`common-keywords` is agnostic — it takes **raw CSS / Playwright selectors**
+`robot_common_keywords` is agnostic — it takes **raw CSS / Playwright selectors**
 as arguments, because it can't know about your project's locator map.
 
 So the boundary crossing is:
@@ -60,7 +61,7 @@ So the boundary crossing is:
 business/registration_keywords.resource  (uses dotted names)
     ↓ resolves locator via the project's technical layer
     ↓ passes raw selector
-common-keywords/form_validation/email_field.resource  (raw selector)
+robot_common_keywords/form_validation/email_field.resource  (raw selector)
 ```
 
 Concretely:
@@ -91,7 +92,7 @@ Now tests read `Validate Email Field By Name    register_page.email_field`.
 > **Note**: Phase 1's shipping login flow doesn't need form-validation
 > coverage — saucedemo just validates on submit with a single error
 > message. This before/after shows **what the project would have to write
-> if it did add a registration form**, with and without `common-keywords`.
+> if it did add a registration form**, with and without `robot_common_keywords`.
 
 ### Scenario
 
@@ -163,16 +164,18 @@ Email Field Should Enforce Max Length
 # them. Rough count: ~180 lines to cover the 4 fields.
 ```
 
-### After — using `common-keywords`
+### After — using `robot_common_keywords`
 
 ```robot
 # keywords/business/web/registration_keywords.resource
+# Requires: pip install of this repo (editable or wheel) so Robot resolves
+# the package resource paths below.
 *** Settings ***
 Resource    ../../technical/web_common.resource
-Resource    ../../../common-keywords/form_validation/required_field.resource
-Resource    ../../../common-keywords/form_validation/email_field.resource
-Resource    ../../../common-keywords/form_validation/phone_field.resource
-Resource    ../../../common-keywords/form_validation/password_field.resource
+Resource    robot_common_keywords/form_validation/required_field.resource
+Resource    robot_common_keywords/form_validation/email_field.resource
+Resource    robot_common_keywords/form_validation/phone_field.resource
+Resource    robot_common_keywords/form_validation/password_field.resource
 
 
 *** Keywords ***
@@ -192,10 +195,10 @@ Registration Form Should Validate All Inputs
 | Concern | Before | After |
 |---|---:|---:|
 | Lines in business keyword | ~180 | 6 |
-| Invalid-email list maintained | by this project | by `common-keywords` (shared across projects) |
+| Invalid-email list maintained | by this project | by `robot_common_keywords` (shared across projects) |
 | Phone country support | hand-coded per country | YAML entry — zero code |
 | Password policy | hard-coded | policy preset (basic/strong/banking) — swap one arg |
-| Total assertions fired | ~50 (subset of edge cases) | ~60 (every edge case in `common-keywords`) |
+| Total assertions fired | ~50 (subset of edge cases) | ~60 (every edge case shipped in `robot_common_keywords`) |
 
 The test case that calls it stays identical:
 
@@ -220,7 +223,7 @@ this shape:
 
 *** Settings ***
 Resource    ../../technical/web_common.resource
-Resource    ../../../common-keywords/form_validation/email_field.resource
+Resource    robot_common_keywords/form_validation/email_field.resource
 
 
 *** Keywords ***
@@ -245,7 +248,7 @@ Three responsibilities in this wrapper:
 
 ---
 
-## When to fold an assertion into `common-keywords`
+## When to fold an assertion into `robot_common_keywords`
 
 Ask, in order:
 
@@ -255,10 +258,10 @@ Ask, in order:
    keep it in `keywords/business/`.
 3. **Does it exercise a validation-family concept?** Length range,
    character class, date range, status-code family — yes, that's
-   `common-keywords` territory.
+   `robot_common_keywords` territory.
 4. **Does it tie two domain actions together?** E.g. "Fill the checkout
    form and submit it" — that's project-side. It uses common keywords
    internally but the composition is specific to this app.
 
 If you find yourself copy-pasting a keyword between two projects, that's
-the signal it belongs in `common-keywords`.
+the signal it belongs in `robot_common_keywords`.

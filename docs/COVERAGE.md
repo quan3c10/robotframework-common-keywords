@@ -1,17 +1,17 @@
-# common-keywords — Keyword Coverage Report
+# robot_common_keywords — Keyword Coverage Report
 
-Every public keyword exposed by `common-keywords/` mapped to the self-test
-that exercises it. This file is hand-maintained — regenerate after adding
-keywords or tests.
+Every public keyword in the pip package `robot_common_keywords` (sources under
+`src/robot_common_keywords/`), mapped to the self-test that exercises it.
+This file is hand-maintained — regenerate after adding keywords or tests.
 
-- **Source files scanned**: 20 `.resource` + 7 `.py` libraries
+- **Source files scanned**: 20 `.resource` + 7 `.py` libraries (under `src/robot_common_keywords/`)
 - **Public keywords counted**: 62
 - **Self-tests**: 86 (73 offline + 13 synthetic / wrapper / data-generator)
 - **Last run**: all 86 PASS (offline + live). Phase 1 regression: 10 PASS, 2 mobile SKIP (Appium not running — expected).
 
 > "Direct" = the keyword name is called verbatim in the test.
 > "Transitive" = the keyword runs as a side-effect of a direct call — e.g.
-> the internal helpers in `form_validation/_helpers.resource` are exercised
+> the internal helpers in `src/robot_common_keywords/form_validation/_helpers.resource` are exercised
 > every time any `Validate X Field` keyword runs.
 
 ---
@@ -155,13 +155,14 @@ keywords or tests.
 - **100% direct or close-transitive coverage.**
 - **Gaps closed during this audit (P2-9)**: 6 wrapper keywords had their
   underlying helper tested but not the Response-object-taking wrapper.
-  Added `Create Mock Response` to `api_validation_helpers.py` and 4 new
+  Added `Create Mock Response` to `libraries/api_validation_helpers.py` (sources:
+  `src/robot_common_keywords/libraries/api_validation_helpers.py`) and 4 new
   tests in `test_api_synthetic.robot` to exercise: `Response Should Be
   Server Error`, `Response Should Be Paginated`, `Pagination Metadata
   Should Be Valid`, `Error Response Should Follow Standard Format`,
   `Validation Error Should Mention Field`, `Policy As JSON`.
 - **Last full run**:
-  - `robot -d results common-keywords/tests/` → **86 tests, 86 passed, 0 failed**
+  - `robot -d results tests/` (from this repo root) → **86 tests, 86 passed, 0 failed**
   - `robot -d results_phase1 tests/` → **12 tests, 10 passed, 0 failed, 2 skipped** (mobile, Appium not running)
 - **Regenerate this file after**: adding a new public keyword, renaming an
   existing one, or adding a new self-test file. No automation yet — plan

@@ -6,27 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-- Extend `form_validation/number_field.resource` with 2 keywords:
+- Sources live under `src/robot_common_keywords/`; Robot imports use `Resource robot_common_keywords/...` and `Library robot_common_keywords.libraries.<module>` once the package is installed (`pip install -e .` or wheel).
+
+- Extend `src/robot_common_keywords/form_validation/number_field.resource` with 2 keywords:
   rounding-rule check and leading-zero handling (strip-or-error).
-- Add `form_validation/datepicker.resource` (2 keywords: search filtering,
+- Add `src/robot_common_keywords/form_validation/datepicker.resource` (2 keywords: search filtering,
   selection populates field).
-- Add `form_validation/text_area.resource` (1 keyword: multiline content
+- Add `src/robot_common_keywords/form_validation/text_area.resource` (1 keyword: multiline content
   preserved through round-trip).
 - Extend `tests/fixtures/text_form.html` with price/quantity inputs,
   country picker widget, and notes textarea.
-- Add `ui_validation/checkbox.resource` with 5 keywords for checkbox group
+- Add `src/robot_common_keywords/ui_validation/checkbox.resource` with 5 keywords for checkbox group
   validation (default state, toggle, check-all, indeterminate state,
   auto-check-all on full selection). Self-tests use new checkbox fixture
   in `tests/fixtures/text_form.html`.
-- Add `ui_validation/radio.resource` (2 keywords: default selection, single
+- Add `src/robot_common_keywords/ui_validation/radio.resource` (2 keywords: default selection, single
   selection).
-- Add `ui_validation/button.resource` (2 keywords: conditional visibility,
+- Add `src/robot_common_keywords/ui_validation/button.resource` (2 keywords: conditional visibility,
   debounce on rapid clicks).
-- Add `ui_validation/link.resource` (1 keyword: navigates to target via
+- Add `src/robot_common_keywords/ui_validation/link.resource` (1 keyword: navigates to target via
   URL change).
 - Extend `tests/fixtures/text_form.html` with priority/severity radio groups,
   conditional button, debounced button + counter, anchor link + scroll target.
-- Extend `form_validation/phone_field.resource` with 2 keywords:
+- Extend `src/robot_common_keywords/form_validation/phone_field.resource` with 2 keywords:
   `Validate Phone Boundary Length` (E.164 min/max digit-count boundaries) and
   `Validate Phone Country Rule Violations` (cycles per-country
   `country_rule_invalid_samples` for apps that enforce R007/R008/R009).
@@ -34,17 +36,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   keyword also cycles a top-level `universal_invalid_samples` block (letters,
   SQLi/XSS payloads, Unicode digit variants). Backward-compatible: empty
   list when the YAML doesn't define the block.
-- Expand `test_data/phone_formats.yaml` from 4 to 32 countries with rich
+- Expand `src/robot_common_keywords/test_data/phone_formats.yaml` from 4 to 32 countries with rich
   valid samples drawn from the phone-validation test plan; add
   `universal_invalid_samples` and per-country `country_rule_invalid_samples`
   for VN / US / UK.
 - Tighten phone fixture validator in `tests/fixtures/text_form.html` to also
   reject digit counts > 15 (E.164 R003); add new strict-VN phone input for
   the country-rule self-test.
-- Add `libraries/yaml_loader.py` providing `Load YAML` (returns a recursive
-  `DotDict` so callers can use `${data.countries.VN}` attribute syntax). Fix
-  pre-existing wrong relative path in `form_validation/phone_field.resource`
-  (`../../libraries/...` → `../libraries/...`).
+- Add `src/robot_common_keywords/libraries/yaml_loader.py` providing `Load YAML` (returns a recursive
+  `DotDict` so callers can use `${data.countries.VN}` attribute syntax). Resources
+  now reference it via `Library robot_common_keywords.libraries.yaml_loader` (src layout).
 
 ## [0.1.0] — 2026-04-25 — Initial release
 
