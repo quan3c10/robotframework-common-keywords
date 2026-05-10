@@ -54,9 +54,22 @@ trap 'deactivate 2>/dev/null || true; rm -rf "$TESTPYPI_VENV" "$TESTPYPI_FILE"' 
 "$PYTHON" -m venv "$TESTPYPI_VENV"
 # shellcheck disable=SC1091
 source "$TESTPYPI_VENV/bin/activate"
+
+# pip merges primary + extra indexes; if this project also exists on prod PyPI with an
+# older version, resolution can pick prod and ignore the new TestPyPI release. Install
+# deps from PyPI, then install ONLY our package from TestPyPI (--no-deps forces that index
+# lookup for this requirement). Keep this list in sync with [project] dependencies in pyproject.toml.
 pip install --quiet \
+    --index-url https://pypi.org/simple/ \
+    "robotframework>=7.0" \
+    "robotframework-browser>=18.0" \
+    "robotframework-requests>=0.9.7" \
+    "faker>=25.0" \
+    "jsonschema>=4.0" \
+    "phonenumbers>=8.13" \
+    "pyyaml>=6.0"
+pip install --quiet --no-deps --no-cache-dir \
     --index-url https://test.pypi.org/simple/ \
-    --extra-index-url https://pypi.org/simple/ \
     "robotframework-common-keywords==$VERSION"
 
 cat > "$TESTPYPI_FILE" <<'EOF'
@@ -101,7 +114,28 @@ trap 'deactivate 2>/dev/null || true; rm -rf "$PYPI_VENV" "$PYPI_FILE"' EXIT
 "$PYTHON" -m venv "$PYPI_VENV"
 # shellcheck disable=SC1091
 source "$PYPI_VENV/bin/activate"
-pip install --quiet "robotframework-common-keywords==$VERSION"
+pip install --quiet --upgrade pip
+
+# PyPI's JSON/simple index can lag ~1–3 minutes after twine reports success; pip may also
+# cache an old "available versions" listing. Use explicit index + no cache, with retries.
+PYPI_SIMPLE="https://pypi.org/simple/"
+ATTEMPT=1
+MAX_ATTEMPTS=14
+until pip install --quiet --no-cache-dir \
+    --index-url "$PYPI_SIMPLE" \
+    "robotframework-common-keywords==$VERSION"
+do
+    if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+        echo "FAIL: pip still cannot install robotframework-common-keywords==$VERSION from PyPI."
+        echo "      Confirm Stage 4 succeeded and the files appear at:"
+        echo "      https://pypi.org/project/robotframework-common-keywords/$VERSION/"
+        echo "      If they do, wait a few minutes and re-run only Stage 5 in a fresh venv, or re-run this script after bumping nothing."
+        exit 1
+    fi
+    echo "    PyPI index not offering $VERSION yet (pip only saw older versions). Retry $ATTEMPT/$MAX_ATTEMPTS in 15s…"
+    ATTEMPT=$((ATTEMPT + 1))
+    sleep 15
+done
 
 cat > "$PYPI_FILE" <<'EOF'
 *** Settings ***
